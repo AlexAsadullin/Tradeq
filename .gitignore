@@ -1,0 +1,23 @@
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Local environment
+.env
+.venv/
+
+# Shared platform data root (TRADEQ_DATA_DIR); never committed
+data/
+
+# Project repositories: each is an independent git repository, linked from README.md
+research-ledger/
+market-tape-recorder/
+point-in-time-store/
+tsfm-arena/
+llm-leakage-probe/
+backtest-orchestrator/
+agent-arena/
+risk-gated-mcp-gateway/
+reactive-lob-sim/
+shadow-exchange/
