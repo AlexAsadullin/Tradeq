@@ -43,7 +43,7 @@ All results so far come from synthetic data, because no recorded market data exi
 | I5 | Multi-fidelity backtest orchestrator | [backtest-orchestrator/](backtest-orchestrator/) | [06](prompts/06-backtest-orchestrator.md) | 76 | Calibrated fill-probability error 0.021 against 0.752 for touch fills; parity check found 64 of 64 planted engine bugs |
 | S8 | Agent Arena | [agent-arena/](agent-arena/) | [07](prompts/07-agent-arena.md) | 81 | One run per agent named the wrong winner in 51.7% (46.0 to 57.3) of seasons; the arena protocol in 0.0% (0.0 to 1.3) |
 | I9 | Risk-gated MCP agent gateway | [risk-gated-mcp-gateway/](risk-gated-mcp-gateway/) | [08](prompts/08-risk-gated-mcp-gateway.md) | 73 | Blocked 1225 of 1225 adversarial violations with 0 of 2686 false refusals; an unguarded wrapper blocked none |
-| S3 | Reactive crypto LOB simulator + sim-to-real gap score | [reactive-lob-sim/](reactive-lob-sim/) | [09](prompts/09-reactive-lob-sim.md) | 40 | Gap score of tape replay 0.115 (0.075 to 0.191) against 0.285 to 0.383 for the generative and agent-based simulators |
+| S3 | Reactive crypto LOB simulator + sim-to-real gap score | [reactive-lob-sim/](reactive-lob-sim/) | [09](prompts/09-reactive-lob-sim.md) | 43 | Gap score of tape replay 0.115 (0.075 to 0.191) against 0.285 to 0.383 for the generative and agent-based simulators |
 | I6 | Shadow Exchange sandbox with micro/macro scenarios | [shadow-exchange/](shadow-exchange/) | [10](prompts/10-shadow-exchange.md) | 84 | Testnet-style ideal fills credit a market maker with 3137 USDT/day against 865 for queue-aware fills; 15 ms latency turns this into a loss of 900 |
 
 Ports are listed in [prompts/00-platform-conventions.md](prompts/00-platform-conventions.md), section 4.
