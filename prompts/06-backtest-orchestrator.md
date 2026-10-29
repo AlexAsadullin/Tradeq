@@ -13,8 +13,8 @@ contracts_produced: "6.5 (backtest service)"
 contracts_consumed: "6.1, 6.3, 6.4 (fills), 6.5 (sim)"
 spec_section: "quant_platform_plan_full.md, project I5"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # I5 - Multi-fidelity Backtest Orchestrator
@@ -22,6 +22,10 @@ date: 2026-10-21
 You are the sole developer of the `backtest-orchestrator` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Orchestrate existing engines (vectorbt, NautilusTrader, hftbacktest) into a fidelity ladder with reality-calibrated fills, cross-engine parity checks and automatic trial logging. Do not build a new engine.
+
+## Revision 2 (2026-10-29): MOEX scope
+
+Use the MOEX venue config (`moex-tbank` or `moex-algopack`, lots, ticks, RUB fees) and calibrate fills from I6 MOEX fills; I2 now serves `tape.book_snapshot` and `tape.candles` for MOEX. See `../docs/moex-sources.md` and section 5.4 of the spec.
 
 ## Before you write code
 

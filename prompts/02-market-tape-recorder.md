@@ -13,15 +13,37 @@ contracts_produced: "6.2"
 contracts_consumed: "none"
 spec_section: "quant_platform_plan_full.md, project I1"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # I1 - Market Tape Recorder
 
 You are the sole developer of the `market-tape-recorder` repository, part of the Tradeq full-cycle quant trading platform.
 
-**Mission.** Build a self-hosted, quality-certified recorder for crypto CEX, on-chain perp DEX and MOEX market data in one schema.
+**Mission.** Build a self-hosted, quality-certified recorder for MOEX market data (T-Bank Invest API and MOEX AlgoPack) in one schema. (Revision 2; the v0.1 mission covered crypto venues too.)
+
+## Revision 2 (2026-10-29): MOEX only
+
+This revision overrides the v0.1 scope below wherever they conflict. Read `../docs/moex-sources.md` first.
+
+1. Remove the Binance, Bybit, OKX and Hyperliquid adapters, their fixtures, settings, live tests and the
+   cryptofeed-based report experiment. They stay in git history.
+2. Add a T-Bank adapter: the market-data WebSocket stream (`json-proto` subprotocol, bearer token from
+   `TBANK_TOKEN`) for order books (full snapshots, depth from config), trades, 1-minute candles and trading
+   status; and a REST history client (`GetCandles`, `GetLastTrades`, `GetOrderBook`) for backfill and resync.
+3. Add an AlgoPack adapter (`ALGOPACK_TOKEN`): REST polling of the 20-level order book (`SEQNUM`), all trades from
+   the last `TRADENO`, candles, and Super Candles (tradestats, orderstats, obstats); keep the public ISS as the
+   tokenless delayed fallback (`moex-iss`). The ISS+ STOMP WebSocket is optional and goes behind a flag.
+4. Venues are `moex-tbank`, `moex-algopack`, `moex-iss`; symbols `<SECID>-RUB-<BOARD>`; sizes in shares
+   (contract 6.2 revision 2).
+5. Certificates use MOEX trading-session windows (main and evening sessions, Moscow time) and check sequence
+   gaps only where the source has sequence numbers; for T-Bank they check snapshot staleness and crossed books.
+6. Recorder first: bounded queues, the writer never waits on analytics, `GET /status` reports queue pressure
+   so other jobs can back off.
+7. The two sources for one symbol replace the two regions: `merge-regions` keeps working per source, and the
+   cross-source comparison is a certificate check when both sources exist for a day.
+8. The v0.1 report (crypto synthetic data) is outdated; mark it so in the README until a MOEX rerun.
 
 ## Before you write code
 

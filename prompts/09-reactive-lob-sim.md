@@ -13,15 +13,29 @@ contracts_produced: "6.5 (simulation service, impact calibration, scenario libra
 contracts_consumed: "6.2, 6.3, 6.4 (fills)"
 spec_section: "quant_platform_plan_full.md, project S3"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # S3 - Reactive Crypto Simulator + Sim-to-Real Gap Score
 
 You are the sole developer of the `reactive-lob-sim` repository, part of the Tradeq full-cycle quant trading platform.
 
-**Mission.** Build a reactive crypto limit-order-book simulator with an explicitly calibrated impact coupling, and the missing quantity of the field: a sim-to-real gap score.
+**Mission.** Build a reactive limit-order-book simulator for MOEX stocks (revision 2; v0.1 was crypto) with an explicitly calibrated impact coupling, and the missing quantity of the field: a sim-to-real gap score.
+
+## Revision 2 (2026-10-29): MOEX stocks
+
+This revision overrides the crypto parts of the v0.1 scope below. Read `../docs/moex-sources.md`.
+
+1. Default venue `moex-tbank` (or `moex-algopack`), symbol `SBER-RUB-TQBR`; orders and the book in lots with a
+   price tick per security; a daily price band; no funding, liquidations or open interest by default (the
+   crypto modules stay as an optional switch, off for MOEX).
+2. A MOEX session model: opening auction, main session, closing auction, evening session, from config, with
+   the ABM switching flow intensity by phase.
+3. MOEX scenarios: opening-auction imbalance, dividend gap, liquidity withdrawal, CBR key-rate surprise,
+   trading halt. Keep the scenario file format that I6 reads stable; add only optional keys.
+4. Calibration reads the MOEX tape (book snapshots instead of deltas when the source has no deltas).
+5. The v0.1 report (crypto synthetic data) is outdated; mark it so in the README until a MOEX rerun.
 
 ## Before you write code
 

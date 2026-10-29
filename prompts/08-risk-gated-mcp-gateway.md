@@ -13,8 +13,8 @@ contracts_produced: "6.6"
 contracts_consumed: "6.1, 6.3, 6.4, 6.5"
 spec_section: "quant_platform_plan_full.md, project I9"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # I9 - Risk-gated MCP Agent Gateway
@@ -22,6 +22,19 @@ date: 2026-10-21
 You are the sole developer of the `risk-gated-mcp-gateway` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Give AI agents one MCP door to the platform, with time-travel-safe data, every idea counted as a trial, per-agent budgets, and orders only through the shared risk path.
+
+## Revision 2 (2026-10-29): exchange-agnostic, with a market-mirroring sandbox
+
+This revision adds to the v0.1 scope below. Read contracts 6.6 to 6.8 in the conventions.
+
+1. Put every order and account call behind the `BrokerAdapter` protocol (contract 6.8), chosen per venue in
+   config. The MCP tools, budgets and risk checks must not import any adapter.
+2. Build the `mirror` adapter first: a sandbox that duplicates the real market by matching orders against the
+   current order book from I2 (live edge in paper mode, the session clock in replay), with queue position for
+   resting orders, partial fills, MOEX lot and tick rules, price bands and a commission from config.
+3. Add the `tbank-sandbox` adapter (T-Bank SandboxService over REST, token from env) and keep the I6 adapter
+   (`shadow`). Live routing to I7 stays a stub-free refusal until I7 exists.
+4. Add the tools `market_slice` and `instrument`; check lots, ticks and price bands in the risk path.
 
 ## Before you write code
 

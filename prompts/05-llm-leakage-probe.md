@@ -13,8 +13,8 @@ contracts_produced: "6.5 (leakage probe)"
 contracts_consumed: "6.1, 6.5 (text corpus)"
 spec_section: "quant_platform_plan_full.md, project S7"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # S7 - LLM Leakage Probe + TinyChrono
@@ -22,6 +22,10 @@ date: 2026-10-21
 You are the sole developer of the `llm-leakage-probe` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Measure how much an LLM's 'trading skill' is memorised outcomes, per entity and date, and provide point-in-time tiny language models that cannot know the future.
+
+## Revision 2 (2026-10-29): MOEX scope
+
+Crypto text is deferred. The Russian-language track and MOEX outcomes (TQBR stocks) become the first real probe target once I2 holds MOEX history. See `../docs/moex-sources.md` and section 5.4 of the spec.
 
 ## Before you write code
 

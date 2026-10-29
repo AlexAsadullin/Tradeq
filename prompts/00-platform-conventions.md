@@ -5,8 +5,8 @@ applies_to: [S6, I1, I2, S1, S7, I5, S8, I9, S3, I6]
 spec: ../quant_platform_plan_full.md
 constraints: ../constraints.txt
 python: "3.13"
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # Tradeq platform conventions
@@ -137,9 +137,27 @@ If you must extend a contract, add only optional fields and document the change 
 
 ### 6.2 Market Tape Recorder (I1): normalised tape on disk
 
+Revision 2 (2026-10-29, MOEX only). The market is the Moscow Exchange. A venue name identifies the feed that
+captured the data, because the same instrument is recorded from more than one source: `moex-tbank` (T-Bank
+Invest API), `moex-algopack` (MOEX AlgoPack with a token), `moex-iss` (public ISS, delayed). The source facts
+are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `liquidations` and
+`open_interest` are deferred; readers must still accept them, so old files stay readable.
+
 - Parquet under `$TRADEQ_DATA_DIR/market-tape-recorder/tape/venue=<venue>/channel=<channel>/symbol=<symbol>/date=<YYYY-MM-DD>/part-<n>.parquet`.
-- Channels: `trades`, `book_delta`, `book_snapshot`, `funding`, `liquidations`, `open_interest`.
-- Symbols are normalised as `<BASE>-<QUOTE>-<KIND>`, with KIND in `SPOT|PERP|FUT-<YYYYMMDD>`; MOEX uses `<SECID>-RUB-<BOARD>`.
+- Channels: `trades`, `book_snapshot`, `book_delta`, `candles`, `trading_status`, `tradestats`, `orderstats`,
+  `obstats` (the last three are AlgoPack Super Candles).
+- Symbols are `<SECID>-RUB-<BOARD>`, for example `SBER-RUB-TQBR`. `date` is the MOEX trade date (Moscow time).
+- `size` is always in shares (lots times the lot size), and `price` in roubles per share. The lot size and the
+  price tick per symbol are in I1's settings and in the I2 dataset `instruments`.
+- MOEX-specific columns (all channels, nullable): `source_seq` (str; the source's own id when it is not an
+  integer). `trades` adds `trading_session` (str, nullable: `0` morning, `1` main, `2` evening).
+- `candles`: `interval` (str, `1m|10m|1h|1d`), `ts_open`, `ts_close` (int64 ns), `open`, `high`, `low`, `close`,
+  `volume` (shares), `value` (roubles, nullable).
+- `trading_status`: `status` (str; the source's status code), `limit_order_allowed` and `market_order_allowed`
+  (bool, nullable).
+- `tradestats`, `orderstats`, `obstats`: one row per 5-minute bar, `ts_exchange` is the bar end and `ts_local` is
+  the publication time (`SYSTIME`), followed by the documented AlgoPack columns in snake case (for example
+  `pr_vwap`, `disb`, `put_vol_b`, `spread_bbo`, `imbalance_vol`).
 - Common columns: `venue` (str), `symbol` (str), `ts_exchange` (int64 ns, nullable), `ts_local` (int64 ns,
   arrival time), `capture_region` (str), `connection_id` (str), `seq` (int64, nullable; venue sequence or
   update id).
@@ -209,6 +227,38 @@ If you must extend a contract, add only optional fields and document the change 
   known_at, budgets}`, and `POST /admin/v1/sessions/{session_id}/clock` takes `{known_at}`. The arena uses these
   to drive episodes.
 - Transports: streamable HTTP (port from settings) and stdio.
+- Added in revision 2 (2026-10-29): the tool `market_slice(symbols?)`, which returns contract 6.7 at the session
+  clock, and the tool `instrument(venue, symbol)`, which returns the broker's trading rules (lot size, tick,
+  price band, trading status). `place_order` takes `qty` in shares, and the gateway rejects a quantity that is
+  not a whole number of lots or a price off the tick.
+
+### 6.7 Market slice (I2): every metric at one moment (revision 2)
+
+- `GET /v1/slice?known_at=<ISO>&symbols=<a,b>&venue=<v>` returns a `MarketSlice`: `{known_at, venue, instruments:
+  [InstrumentSlice], fingerprint}`. Without `known_at` the store answers at its live edge (the newest
+  knowledge time it holds), and the response says which time that was.
+- `InstrumentSlice`: `symbol`, `as_of` (the knowledge time of the newest row used), `trading_status`, `best_bid`,
+  `best_ask`, `mid`, `spread_bps`, `bid_depth`, `ask_depth` (shares in the top N levels, N from settings),
+  `imbalance` ((bid_depth - ask_depth) / (bid_depth + ask_depth)), `book_levels` (list of `{side, price, size}`,
+  optional), `last_price`, `last_trade_ts`, `vwap` and `volume` and `trades` over a trailing window (window in
+  settings), `return_1m`, `return_5m`, candle fields of the latest closed 1-minute candle, the latest Super Candle
+  values (`tradestats`, `orderstats`, `obstats` as nested objects, nullable), `stale` (bool, true when the
+  newest row is older than the staleness limit) and `quality` (the I1 certificate status of that day, nullable).
+- `GET /v1/slice/stream?symbols=&venue=&interval_ms=` is a Server-Sent Events stream of `MarketSlice` documents
+  at the live edge, one per interval. It is read-only and never blocks ingestion.
+- Every value is computed only from rows with `knowledge_time <= known_at`, so the slice at a historical T is
+  exactly what was knowable then. An RL environment, an agent tool and the terminal all read this one function.
+
+### 6.8 Broker adapter (I9): one boundary for every exchange (revision 2)
+
+- I9 talks to execution venues only through a `BrokerAdapter` protocol: `instrument(symbol) -> InstrumentRules`
+  (`lot_size`, `tick`, `price_band_low`, `price_band_high`, `currency`, `trading_status`, `tradable`),
+  `place(order) -> OrderAck`, `cancel(order_id)`, `order(order_id)`, `positions(account_id)`, `account(account_id)`,
+  `fills(account_id, since)`. Orders and results use the contract 6.4 shapes, with `qty` in shares.
+- Adapters are chosen per venue in I9's settings (`brokers.<venue>.adapter`). Shipped adapters: `mirror` (the
+  built-in sandbox that matches orders against the I2 order book, see I9's README), `shadow` (I6 over contract
+  6.4), `tbank-sandbox` (T-Bank SandboxService over REST). A new exchange or terminal is a new adapter class and
+  a config entry; the MCP tools, budgets and risk checks do not change.
 
 ## 7. Testing
 
@@ -238,3 +288,17 @@ You are done when all of these hold:
 5. Your final message reports: what was built, test and coverage numbers, any packages added beyond
    `constraints.txt` (with versions), contract extensions, known limitations, and the commit list
    (`git log --oneline`).
+
+## 9. Market scope and computing priority (revision 2, 2026-10-29)
+
+- The platform targets MOEX only (stocks on TQBR first). Crypto code that already exists may stay as an optional
+  module where removing it would break a working feature, but no new crypto work is done, and defaults point at
+  MOEX. Source facts are in `$ROOT/docs/moex-sources.md`; tokens come only from the environment
+  (`TBANK_TOKEN` for T-Bank, `ALGOPACK_TOKEN` for AlgoPack; each project maps them into its own settings).
+- No live token exists yet. Code against the documented payloads, test with hand-made fixtures that follow the
+  documented shapes exactly, and gate every network test behind `-m live`.
+- Data collection has the highest priority on any shared host. I1 collectors never wait on downstream work:
+  their queues are bounded, overflow drops analytics and never capture, and every other long job (training,
+  backtests, reports) runs at a lower OS priority (`nice`) and backs off when I1 reports queue pressure on its
+  status endpoint.
+- The repositories remain independent blocks: no imports across repositories, only the contracts above.

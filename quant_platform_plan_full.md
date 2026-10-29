@@ -4,6 +4,8 @@ Unified document: Part 1 (science track) + Part 2 (trading infrastructure track)
 
 Goal: a portfolio of GitHub projects that supports a smooth move from data science to quant trading, and that together form one platform with access for humans, AI agents and trading robots.
 
+**Revision of 2026-10-29: MOEX focus and the real-time RL loop.** The platform now targets one market, the Moscow Exchange (stocks on the TQBR board first). Crypto venues are out of scope until further notice; crypto-specific parts of the sections below (Binance/Bybit/OKX/Hyperliquid capture, funding and liquidations, on-chain wallets, crypto options) are deferred, not deleted. Market data comes from two sources: the T-Bank Invest API (free token, free sandbox, real-time streams; used first) and MOEX AlgoPack (paid token; 20-level order books, all trades, Super Candles). Their documented interfaces are summarised in [docs/moex-sources.md](docs/moex-sources.md). The repositories stay independent blocks that any project can reuse, and together they form a real-time reinforcement-learning system: it records the live market, stores it "as known at T", trains an RL trading agent on history and on live data, and tests the agent on both, in a sandbox that mirrors the real market before any external broker. The Point-in-time Store (I2) is the central module, and it also feeds a real-time terminal with a slice of every metric at one moment. Computing priority goes to data collection first. Section 5.4 describes the loop.
+
 ---
 
 ## Contents
@@ -12,7 +14,7 @@ Goal: a portfolio of GitHub projects that supports a smooth move from data scien
 2. Method and rules
 3. Part 1 - Science track (S1-S12)
 4. Part 2 - Infrastructure track (I1-I10)
-5. Platform architecture and user experience
+5. Platform architecture and user experience (5.4: the real-time RL loop)
 6. Unified timeline
 7. Prioritisation and career angle
 
@@ -43,34 +45,38 @@ Evidence from the infrastructure track:
 
 ### 1.2 Strategy
 
-Do not compete on "yet another engine or model". Build the validity and reality layer that every human strategy, AI agent and robot must pass through, reuse the best open-source engines underneath (NautilusTrader, hftbacktest, cryptofeed, QuestDB/ArcticDB, OpenBB components), and publish honest research results on top.
+Do not compete on "yet another engine or model". Build the validity and reality layer that every human strategy, AI agent and robot must pass through, reuse the best open-source engines underneath (NautilusTrader, hftbacktest, QuestDB/ArcticDB, OpenBB components), and publish honest research results on top.
+
+Since 2026-10-29 the first market is MOEX, reached through the T-Bank Invest API and MOEX AlgoPack, and the first end-to-end goal is the real-time RL loop of section 5.4: collect, store as known at T, train, test in a sandbox that mirrors the market, then promote.
 
 ### 1.3 All projects at a glance
 
-| ID | Project | Track | Priority |
-|---|---|---|---|
-| S6 | Research Ledger (trial accounting, DSR/PBO gate) | Science core | A |
-| I1 | Market Tape Recorder (crypto CEX/DEX + MOEX, quality-certified) | Infra core | A |
-| I2 | Point-in-time Store (bitemporal "as-known-at") | Infra core | A |
-| S1 | TSFM Arena + rank-tuned finance foundation model | Science | A |
-| S7 | LLM leakage probe + TinyChrono point-in-time tiny LMs | Science | A |
-| I5 | Multi-fidelity backtest orchestrator with reality-calibrated fills | Infra | A |
-| S8 | Agent Arena | Science | A |
-| I9 | Risk-gated MCP agent gateway | Infra | A |
-| S3 | Reactive crypto LOB simulator + sim-to-real gap score | Science | A |
-| I6 | Shadow Exchange sandbox with micro/macro scenarios | Infra | B |
-| I3 | Latency-stamped text and filings parsers | Infra | B |
-| I4 | Copyability tracker for insiders, Congress, funds, on-chain whales | Infra | B |
-| I7 | Unified execution and risk engine (robots runtime) | Infra | B |
-| S2 | LOB forecast-to-fill benchmark | Science | B |
-| S4 | Robust RL execution and market making | Science | B |
-| S5 | Honest Alpha Factory | Science | B |
-| S9 | Time-to-signal benchmark + distilled tiny market-text models | Science | B |
-| I8 | Research-integrity terminal | Infra | B |
-| I10 | Strategy observability and drift alerts | Infra | C |
-| S10 | Online conformal risk + regime sizing | Science | C |
-| S11 | Cost-aware decision-focused allocator | Science | C |
-| S12 | Crypto Vol Lab (rough-vol calibration, deep hedging) | Science | C |
+Status values: **v0.1 done** (base and unique features work end to end on synthetic or fixture data, tests pass, report written); **v0.2 MOEX** (adapted to MOEX in the 2026-10-29 pass, offline tests pass, not yet run against a live token); **not started**. No project has run on real market data yet, so every result so far is synthetic. Tests are the default offline suite (`make test`).
+
+| ID | Project | Track | Priority | Status (2026-10-29) |
+|---|---|---|---|---|
+| S6 | Research Ledger (trial accounting, DSR/PBO gate) | Science core | A | v0.1 done; 89 tests; market-independent |
+| I1 | Market Tape Recorder (MOEX via T-Bank and AlgoPack, quality-certified) | Infra core | A | v0.2 MOEX: crypto adapters removed, T-Bank and AlgoPack adapters, recorder priority; awaits tokens; report outdated (crypto synthetic) |
+| I2 | Point-in-time Store (bitemporal "as-known-at"; central hub; market slice for the terminal) | Infra core | A | v0.2 MOEX: MOEX datasets, live append, market-slice API and stream |
+| S1 | TSFM Arena + rank-tuned finance foundation model | Science | A | v0.1 done; 71 tests; synthetic panel, to be pointed at MOEX stocks via I2 |
+| S7 | LLM leakage probe + TinyChrono point-in-time tiny LMs | Science | A | Partly done: probe framework v0.1 (66 tests); TinyChrono only toy-sized; no real LLM probed |
+| I5 | Multi-fidelity backtest orchestrator with reality-calibrated fills | Infra | A | v0.1 done; 76 tests; market-independent, needs MOEX venue config |
+| S8 | Agent Arena (agents and strategies against each other) | Science | A | v0.1 framework done; 81 tests; no real LLM run; LLM agents optional because of token cost |
+| I9 | Risk-gated MCP agent gateway (exchange-agnostic, with a market-mirroring sandbox) | Infra | A | v0.2 MOEX: broker-adapter boundary, built-in mirror sandbox, T-Bank sandbox broker |
+| S3 | Reactive LOB simulator for MOEX stocks + sim-to-real gap score | Science | A | v0.2 MOEX: MOEX lot/tick/price-band/session model, MOEX scenarios; report outdated (crypto synthetic) |
+| I6 | Shadow Exchange sandbox (MOEX books via T-Bank/AlgoPack; T-Bank sandbox as baseline) | Infra | B | v0.2 MOEX: MOEX fees and lots, T-Bank live feed, T-Bank sandbox comparison; report outdated |
+| I3 | Latency-stamped text and filings parsers | Infra | B | not started |
+| I4 | Copyability tracker for insiders, Congress, funds, on-chain whales | Infra | B | not started (MOEX-relevant part: issuer disclosures) |
+| I7 | Unified execution and risk engine (robots runtime) | Infra | B | not started |
+| S2 | LOB forecast-to-fill benchmark | Science | B | not started |
+| S4 | Robust RL execution and market making (the RL agent of the loop) | Science | B | not started; next in line after the data path |
+| S5 | Honest Alpha Factory | Science | B | not started |
+| S9 | Time-to-signal benchmark + distilled tiny market-text models | Science | B | not started |
+| I8 | Research-integrity terminal (real-time market slice) | Infra | B | not started; consumes the I2 slice API |
+| I10 | Strategy observability and drift alerts | Infra | C | not started |
+| S10 | Online conformal risk + regime sizing | Science | C | not started |
+| S11 | Cost-aware decision-focused allocator | Science | C | not started |
+| S12 | Crypto Vol Lab (rough-vol calibration, deep hedging) | Science | C | not started; deferred (crypto); a MOEX options variant is possible later |
 
 ---
 
@@ -167,11 +173,11 @@ A second research pass covered Chinese open-source frameworks, data interfaces, 
 
 **Gap.** Nobody closes the loop generator -> realism -> strategy trained in sim -> live paper trading -> measured degradation. Missing quantity: a sim-to-real gap score. No open generator trained on crypto message data with funding and liquidation events.
 
-**Project: Reactive Crypto Simulator + Sim-to-Real Gap Score**
+**Project: Reactive MOEX Stock Simulator + Sim-to-Real Gap Score** (adapted from the crypto design on 2026-10-29)
 - Base: replay, matching engine, zero-intelligence/Hawkes agents, generative order flow, stylised-fact checks.
-- Unique: sim-to-real gap score (same strategies in replay, ABM, generative sim and I6 shadow exchange; simulators ranked by how well they predict live results); hybrid engine with an explicit calibrated impact coupling; crypto conditioning on funding, liquidations, open interest; counterfactual stress library.
-- Platform: `sim-service` used by S4, I6 and terminal stress tests.
-- Deliverable: `reactive-lob-sim` + public synthetic crypto LOB dataset + LOB-Bench-compatible scores.
+- Unique: sim-to-real gap score (same strategies in replay, ABM, generative sim and I6 shadow exchange; simulators ranked by how well they predict live results); hybrid engine with an explicit calibrated impact coupling; MOEX equity microstructure (orders in lots, price tick per security, daily price bands, opening and closing auctions, the main and evening sessions, T+1 settlement, no funding or liquidations); counterfactual stress library for MOEX (opening-auction imbalance, dividend gap, liquidity withdrawal, CBR key-rate surprise, trading halt). The crypto conditioning (funding, liquidations, open interest) stays in the code as an optional module for a later crypto return.
+- Platform: `sim-service` used by S4 (RL training), I6, I9's sandbox and terminal stress tests.
+- Deliverable: `reactive-lob-sim` + LOB-Bench-compatible scores on MOEX tape.
 
 ---
 
@@ -341,15 +347,17 @@ KAN and state-space (Mamba/S5) architectures as model options in S1/S2; GNNs for
 
 **Gap.** No open, self-hosted recorder that (a) proves completeness per day, (b) records both exchange and arrival timestamps from more than one region, (c) covers CEX, on-chain perp DEX and MOEX in one schema, and (d) publishes free archives with quality reports.
 
-**Project: Market Tape Recorder**
-- Base: WebSocket subscription, normalisation, snapshot + delta storage, reconnection.
+**Project: Market Tape Recorder** (MOEX only since 2026-10-29)
+- Base: streaming subscription, REST polling, normalisation, snapshot + delta storage, reconnection.
+- Sources, in order of use: (1) T-Bank Invest API: WebSocket market-data stream (order book up to 50 levels as full snapshots, anonymous trades, candles, trading status) plus REST for history (candles, recent trades); free token. (2) MOEX AlgoPack: REST order book (20 levels, `SEQNUM`), all trades with `TRADENO`, candles, Super Candles (tradestats, orderstats, obstats every 5 minutes), and the ISS+ STOMP WebSocket for order books; paid token. (3) Public ISS without a token as a delayed fallback. See [docs/moex-sources.md](docs/moex-sources.md).
 - Unique:
-  1. Data-quality certificate per instrument-day: sequence-gap detection, crossed-book checks, snapshot/delta consistency, re-subscription gap measurement (overlapping connections to remove the daily gap Tardis documents).
-  2. Dual-region capture (e.g. EU + Tokyo) to measure feed latency and choose the earliest message; latency data reused in S2 and S9.
-  3. One schema across Binance/Bybit/OKX, Hyperliquid (on-chain perps, with wallet-level fills) and MOEX (polled ISS + optional AlgoPack), enabling cross-market studies no analog supports. Optional extension: Chinese futures via a vn.py CTP gateway used as a pure feed adapter, with our quality layer on top.
-  4. Free monthly public archive for a small universe with quality reports, which creates a public dataset for S2/S3 papers.
-- Secondary: Rust/Python collectors, Parquet output.
-- Platform: feeds I2; consumers are every other service.
+  1. Data-quality certificate per instrument-day: sequence-gap detection where the source has sequence numbers (AlgoPack `SEQNUM`, `TRADENO`), crossed-book checks, snapshot staleness, cross-source consistency (T-Bank book against AlgoPack book), re-subscription gap measurement, all within the MOEX trading-session windows from the ISS calendar.
+  2. Two independent sources for the same instrument (T-Bank and AlgoPack) play the role that two regions played for crypto: the merge keeps the earliest message, and the latency of each source is measured; latency data is reused in S2 and S9.
+  3. Recorder first: collection has the highest computing priority on the host (bounded queues, writer never blocked by analytics, nice level for every other process), because data cannot be recollected later.
+  4. One schema for both sources, so every downstream project reads one tape.
+- Secondary: Python collectors, Parquet output.
+- Deferred: crypto venues (Binance, Bybit, OKX, Hyperliquid); their adapters were removed from the code and can be restored from git history.
+- Platform: feeds I2 (batch and live append); consumers are every other service.
 
 ---
 
@@ -367,7 +375,8 @@ KAN and state-space (Mamba/S5) architectures as model options in S1/S2; GNNs for
 **Project: Point-in-time Store**
 - Base: tick storage (QuestDB for hot, Parquet/ArcticDB for research), feature definitions, offline/online feature serving.
 - Unique: bitemporal "as-known-at T" API across all data types (prices, XBRL fundamentals with restatements, ALFRED macro vintages, news first-seen times from I3); leakage guard that rejects or flags queries referencing data not yet known and reports this to S6; dataset fingerprints so every backtest is reproducible.
-- Platform: the only data path for I5, I6, S-track services and agents.
+- Central role (2026-10-29): I2 is the hub of the real-time RL loop. It takes the live tape from I1 continuously (tail of the finalised and staging tape, or a push endpoint), so the same store serves history and the live edge; it holds MOEX datasets (trades, order-book snapshots, candles, Super Candles, trading status, CBR key rate and CPI vintages); and it serves a **market slice**: every metric of every instrument as known at one moment T (best bid and ask, spread, depth and imbalance, last trade, VWAP, volume, Super Candle stats, trading status, data-quality state), both as a query (`GET /v1/slice?known_at=`) and as a live stream for the terminal (I8) and agents (I9). The same slice at historical T is the observation an RL agent sees in training, so training and live inference read one function.
+- Platform: the only data path for I5, I6, S-track services, agents and the terminal.
 
 ---
 
@@ -456,14 +465,15 @@ KAN and state-space (Mamba/S5) architectures as model options in S1/S2; GNNs for
 
 **Gap.** A sandbox that trades against the live real order book (not a testnet), simulates queue-aware fills and impact, and lets you inject micro and macro scenarios with time-travel replay using vintage macro data.
 
-**Project: Shadow Exchange**
-- Base: virtual accounts, order API identical to I7, PnL accounting.
+**Project: Shadow Exchange** (MOEX and T-Bank since 2026-10-29)
+- Base: virtual accounts, order API identical to I7, PnL accounting in roubles with MOEX lots, ticks and broker commission.
 - Unique:
-  1. Shadow fills on live mainnet books (I1 feeds) with queue position and S3-calibrated impact; fills feed I5's calibration.
-  2. Micro scenarios: spread widening, liquidity withdrawal, liquidation cascades from S3 counterfactuals.
-  3. Macro scenarios: CPI/rate surprise replay with ALFRED vintages, funding shocks, volatility surface shocks from S12.
-  4. Time-travel mode: replay any past day exactly as it was known (I2), including news timing (I3).
-  5. The live end of the S3 sim-to-real gap score.
+  1. Shadow fills on live MOEX books (T-Bank stream first, AlgoPack later, through I1) with queue position and S3-calibrated impact; fills feed I5's calibration.
+  2. The T-Bank sandbox is the "testnet" baseline: its documented fill rules (market orders at the last price whatever their size, limit orders filled in full if one lot is available, resting orders outside the book, a flat 0.05% fee) are reproduced offline as an engine, and an optional mirror mode sends the same orders to the real T-Bank sandbox, so the gap between idealised and queue-aware fills is measured on MOEX.
+  3. Micro scenarios: spread widening, liquidity withdrawal, opening-auction imbalance, trading halt, from S3 counterfactuals.
+  4. Macro scenarios: CBR key-rate decision and CPI surprise replay with vintages, dividend gap, volatility shocks.
+  5. Time-travel mode: replay any past day exactly as it was known (I2), including news timing (I3).
+  6. The live end of the S3 sim-to-real gap score.
 
 ---
 
@@ -523,13 +533,16 @@ KAN and state-space (Mamba/S5) architectures as model options in S1/S2; GNNs for
 | [OpenQuant](https://github.com/mitchellbernstein/openquant) | Agents + MCP + paper/Alpaca/Kalshi | Proof of concept |
 | [Quiver MCP](https://glama.ai/mcp/servers/wru0penxe3), [EdgarTools MCP](https://glama.ai/mcp/servers/sareegpt/edgartools-mcp) | Data tools for agents | Read-only data |
 
-**Project: Risk-gated MCP Gateway**
+**Project: Risk-gated MCP Gateway** (exchange-agnostic since 2026-10-29)
 - Base: MCP tools for data, forecasts, backtests, orders.
 - Unique:
   1. Time-travel enforcement: in research mode every data tool answers "as known at T" (I2), so agent backtests cannot leak the future.
   2. Every agent idea and backtest auto-logged as a trial in S6.
   3. Per-agent budgets for capital, drawdown, token spend and latency; orders go through I7 and start in I6.
   4. Leakage report (S7) attached to any LLM-driven strategy before promotion.
+  5. Not bound to an exchange: every order and account call goes through a broker-adapter protocol (place, cancel, order state, positions, account, instrument rules such as lot size, tick and price band). Adapters are selected per venue in config, so terminals and brokers of other exchanges connect later without changes to the tools or the risk path.
+  6. A built-in **mirror sandbox** is the first adapter: it duplicates the real market situation by matching agent orders against the live (or replayed) MOEX order book from I2, with queue-aware fills (I6 engine when it runs, a built-in book matcher otherwise), so agents and RL policies trade a copy of the real market with no broker. The T-Bank sandbox is the first external adapter; the I6 shadow exchange and the future I7 are the others.
+  7. The market slice from I2 is exposed as an MCP tool, so an agent's observation equals the RL agent's observation and the terminal's view.
 
 ---
 
@@ -564,6 +577,20 @@ Generic stacks (Prometheus, Grafana) cover system metrics. Unique layer: strateg
 Idea (human or agent) -> data "as known at T" (I2) -> factor/model (S1/S2/S5) -> fidelity ladder backtests (I5) -> trials counted and deflated (S6) -> leakage audit if an LLM is involved (S7) -> shadow trading on live books with scenarios (I6) -> sim-to-real gap measured (S3) -> promotion to live within a capital tier (I7) -> live decay, coverage and data-quality monitoring (I10) -> automatic demotion if it fails.
 
 The differentiator versus QuantConnect, Qlib, FinRL, Freqtrade/Hummingbot, OpenBB or TradingAgents is that this journey is enforced by design and is identical for humans, agents and robots.
+
+### 5.4 The real-time RL loop (MOEX, from 2026-10-29)
+
+Each repository stays an independent block with its own contracts, so any block can be reused in another project. Wired together they form one loop:
+
+1. **Collect** (I1, highest computing priority): T-Bank stream and AlgoPack polling write the normalised tape and quality certificates.
+2. **Store** (I2, the hub): the tape is appended live and kept bitemporal; history and the live edge are one store. The market slice (all metrics at moment T) is served as a query and as a stream.
+3. **Observe**: the RL agent, LLM agents (I9) and the terminal (I8) read the same market slice, at historical T in training and at "now" in live.
+4. **Train** (S4, with S3): the RL agent trains on replayed history from I2, on S3 simulators calibrated to MOEX tape, and keeps training on the live tape as it arrives.
+5. **Test on history** (I5): the fidelity ladder, every run logged and deflated in S6.
+6. **Test on live** (I9 mirror sandbox, I6): the agent trades a copy of the live market with queue-aware fills; the T-Bank sandbox gives the idealised-fill baseline; S3 measures the sim-to-real gap.
+7. **Promote** (S6 gate, then I7 with a real broker): only after both tests pass; I10 watches for drift and demotes.
+
+Computing priority on one host: I1 collectors first (they cannot replay a missed second), then I2 ingestion and the slice service, then live inference, and only then training, backtests and reports, which run at a lower OS priority and pause when the collector queue grows.
 
 ---
 

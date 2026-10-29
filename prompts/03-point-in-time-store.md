@@ -13,8 +13,8 @@ contracts_produced: "6.3"
 contracts_consumed: "6.1 (leakage events), 6.2 (tape input)"
 spec_section: "quant_platform_plan_full.md, project I2"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # I2 - Point-in-time Store
@@ -22,6 +22,19 @@ date: 2026-10-21
 You are the sole developer of the `point-in-time-store` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Build the only data path for research: a bitemporal 'as-known-at T' store that refuses queries which would leak the future.
+
+## Revision 2 (2026-10-29): the hub of the real-time RL loop
+
+This revision adds to the v0.1 scope below. Read `../docs/moex-sources.md` and section 5.4 of the spec first.
+
+1. MOEX datasets from the I1 tape revision 2: `tape.trades`, `tape.book_snapshot`, `tape.candles`,
+   `tape.trading_status`, `tape.tradestats`, `tape.orderstats`, `tape.obstats`, plus `instruments` (lot size,
+   tick, board per symbol) and macro vintages for the CBR key rate and CPI.
+2. Live append: a follower that tails the I1 tape directory and ingests new finalised parts (and optionally the
+   staging parts) at a configured interval, idempotently, so history and the live edge are one store.
+3. The market slice (contract 6.7): `GET /v1/slice` and the SSE stream `GET /v1/slice/stream`, computed by one
+   pure function from rows known at T, so the RL environment, I9 and the terminal see the same numbers.
+4. Ingestion runs at a lower priority than I1 and never holds a lock that I1 needs.
 
 ## Before you write code
 

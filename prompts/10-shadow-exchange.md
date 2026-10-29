@@ -13,8 +13,8 @@ contracts_produced: "6.4 (order API, fills export)"
 contracts_consumed: "6.2, 6.3, 6.5 (sim)"
 spec_section: "quant_platform_plan_full.md, project I6"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # I6 - Shadow Exchange
@@ -22,6 +22,20 @@ date: 2026-10-21
 You are the sole developer of the `shadow-exchange` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Build a sandbox that trades against real order books, not testnets, with queue-aware fills, calibrated impact, and injectable micro and macro scenarios with time-travel replay.
+
+## Revision 2 (2026-10-29): MOEX and the T-Bank API
+
+This revision overrides the crypto parts of the v0.1 scope below. Read `../docs/moex-sources.md`.
+
+1. Default venue `moex-tbank`, symbol `SBER-RUB-TQBR`, quantities in shares that must be whole lots, prices on
+   the tick, RUB accounting with a broker commission from config; no funding.
+2. Live feed: the T-Bank market-data WebSocket (order-book snapshots and trades) replaces ccxt.
+3. A `tbank-sandbox` fill engine that reproduces the documented T-Bank sandbox rules offline (market at last
+   price for any size, limit filled in full if one lot is at the touch, resting orders outside the book,
+   0.05% fee). It is the "testnet-style" baseline that the queue-aware engine is compared with.
+4. An optional mirror client that also sends each order to the real T-Bank sandbox and records both fills.
+5. Macro scenarios: CBR key-rate decision and CPI surprise instead of the funding shock.
+6. The v0.1 report (crypto synthetic data) is outdated; mark it so in the README until a MOEX rerun.
 
 ## Before you write code
 

@@ -13,8 +13,8 @@ contracts_produced: "leaderboard artefacts"
 contracts_consumed: "6.1, 6.5 (leakage), 6.6"
 spec_section: "quant_platform_plan_full.md, project S8"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # S8 - Agent Arena
@@ -22,6 +22,10 @@ date: 2026-10-21
 You are the sole developer of the `agent-arena` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Evaluate LLM trading agents with statistics that hold up: deflated, bootstrapped, net-of-intelligence-cost, through the same risk path as humans.
+
+## Revision 2 (2026-10-29): MOEX scope
+
+Agents trade MOEX stocks through I9, whose default broker is the mirror sandbox (contract 6.8). The arena's main use is strategy against strategy (quant baselines, RL policies, scripted agents); real LLM agents are optional and capped by a token budget, because every bar of every run would otherwise be an LLM call. See `../docs/moex-sources.md` and section 5.4 of the spec.
 
 ## Before you write code
 

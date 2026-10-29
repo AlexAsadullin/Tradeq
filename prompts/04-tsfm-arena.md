@@ -13,8 +13,8 @@ contracts_produced: "6.5 (forecast service)"
 contracts_consumed: "6.1, 6.3"
 spec_section: "quant_platform_plan_full.md, project S1"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # S1 - TSFM Arena + Rank-Tuned Finance FM
@@ -22,6 +22,10 @@ date: 2026-10-21
 You are the sole developer of the `tsfm-arena` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Build a living, cutoff-aware benchmark of time-series foundation models on financial returns, scored by decision metrics instead of MSE, with a rank-tuned finance model.
+
+## Revision 2 (2026-10-29): MOEX scope
+
+Crypto in the quoted spec is deferred. The data source for the next run is the MOEX stock panel from I2 (`tape.candles` daily and intraday bars of TQBR stocks); the synthetic panel stays for tests. See `../docs/moex-sources.md` and section 5.4 of the spec.
 
 ## Before you write code
 

@@ -13,8 +13,8 @@ contracts_produced: "6.1"
 contracts_consumed: "none"
 spec_section: "quant_platform_plan_full.md, project S6"
 conventions: ./00-platform-conventions.md
-version: 1.0
-date: 2026-10-21
+version: 2.0
+date: 2026-10-29
 ---
 
 # S6 - Research Ledger
@@ -22,6 +22,10 @@ date: 2026-10-21
 You are the sole developer of the `research-ledger` repository, part of the Tradeq full-cycle quant trading platform.
 
 **Mission.** Build the statistical gate of the whole platform: every experiment, from any source, becomes a counted trial, and nothing is promoted without a deflated verdict.
+
+## Revision 2 (2026-10-29): MOEX scope
+
+The ledger is market-independent; no code change is needed. MOEX trials use periods_per_year from the MOEX calendar (about 252 trading days; intraday bars per day from the session schedule). See `../docs/moex-sources.md` and section 5.4 of the spec.
 
 ## Before you write code
 
