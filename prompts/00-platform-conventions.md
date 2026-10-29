@@ -149,15 +149,20 @@ are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `
 - Symbols are `<SECID>-RUB-<BOARD>`, for example `SBER-RUB-TQBR`. `date` is the MOEX trade date (Moscow time).
 - `size` is always in shares (lots times the lot size), and `price` in roubles per share. The lot size and the
   price tick per symbol are in I1's settings and in the I2 dataset `instruments`.
-- MOEX-specific columns (all channels, nullable): `source_seq` (str; the source's own id when it is not an
-  integer). `trades` adds `trading_session` (str, nullable: `0` morning, `1` main, `2` evening).
+- `trades` adds `trading_session` (str, nullable: `0` morning, `1` main, `2` evening). T-Bank trades carry no
+  trade id, so their `trade_id` is built from the trade's content and `seq` is null.
 - `candles`: `interval` (str, `1m|10m|1h|1d`), `ts_open`, `ts_close` (int64 ns), `open`, `high`, `low`, `close`,
   `volume` (shares), `value` (roubles, nullable).
 - `trading_status`: `status` (str; the source's status code), `limit_order_allowed` and `market_order_allowed`
   (bool, nullable).
-- `tradestats`, `orderstats`, `obstats`: one row per 5-minute bar, `ts_exchange` is the bar end and `ts_local` is
-  the publication time (`SYSTIME`), followed by the documented AlgoPack columns in snake case (for example
-  `pr_vwap`, `disb`, `put_vol_b`, `spread_bbo`, `imbalance_vol`).
+- `tradestats`, `orderstats`, `obstats`: one row per 5-minute bar; `ts_exchange` is the bar time
+  (`tradedate` + `tradetime`), `ts_published` (int64 ns, nullable) is the publication time (`SYSTIME`), which is
+  when the bar became knowable, and `ts_local` stays the arrival time. The documented AlgoPack columns follow
+  as float64 (for example `pr_vwap`, `disb`, `put_vol_b`, `spread_bbo`, `imbalance_vol`).
+- `book_snapshot` from T-Bank: every stream message is a full snapshot of `depth` levels with `seq` null and
+  `snapshot_id` `<board>-<exchange time ns>`.
+- Live status: I1 serves `GET /v1/load` with `pressure: ok|high`; long jobs on the same host poll it and pause
+  while it is high (section 9).
 - Common columns: `venue` (str), `symbol` (str), `ts_exchange` (int64 ns, nullable), `ts_local` (int64 ns,
   arrival time), `capture_region` (str), `connection_id` (str), `seq` (int64, nullable; venue sequence or
   update id).
