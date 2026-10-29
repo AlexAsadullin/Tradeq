@@ -146,7 +146,8 @@ are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `
 - Parquet under `$TRADEQ_DATA_DIR/market-tape-recorder/tape/venue=<venue>/channel=<channel>/symbol=<symbol>/date=<YYYY-MM-DD>/part-<n>.parquet`.
 - Channels: `trades`, `book_snapshot`, `book_delta`, `candles`, `trading_status`, `tradestats`, `orderstats`,
   `obstats` (the last three are AlgoPack Super Candles).
-- Symbols are `<SECID>-RUB-<BOARD>`, for example `SBER-RUB-TQBR`. `date` is the MOEX trade date (Moscow time).
+- Symbols are `<SECID>-RUB-<BOARD>`, for example `SBER-RUB-TQBR`. `date` is the UTC date of arrival; the MOEX
+  sessions (06:50 to 23:50 Moscow time) fall inside one UTC day, so it equals the trade date for TQBR.
 - `size` is always in shares (lots times the lot size), and `price` in roubles per share. The lot size and the
   price tick per symbol are in I1's settings and in the I2 dataset `instruments`.
 - `trades` adds `trading_session` (str, nullable: `0` morning, `1` main, `2` evening). T-Bank trades carry no
@@ -240,8 +241,8 @@ are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `
 ### 6.7 Market slice (I2): every metric at one moment (revision 2)
 
 - `GET /v1/slice?known_at=<ISO>&symbols=<a,b>&venue=<v>` returns a `MarketSlice`: `{known_at, venue, instruments:
-  [InstrumentSlice], fingerprint}`. Without `known_at` the store answers at its live edge (the newest
-  knowledge time it holds), and the response says which time that was.
+  [InstrumentSlice], fingerprint}`. Without `known_at` the store answers at the current time, which gives the
+  live edge; `known_at` in the response and `as_of` per instrument say which times were used.
 - `InstrumentSlice`: `symbol`, `as_of` (the knowledge time of the newest row used), `trading_status`, `best_bid`,
   `best_ask`, `mid`, `spread_bps`, `bid_depth`, `ask_depth` (shares in the top N levels, N from settings),
   `imbalance` ((bid_depth - ask_depth) / (bid_depth + ask_depth)), `book_levels` (list of `{side, price, size}`,
