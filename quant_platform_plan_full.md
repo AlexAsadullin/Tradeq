@@ -51,28 +51,28 @@ Since 2026-10-29 the first market is MOEX, reached through the T-Bank Invest API
 
 ### 1.3 All projects at a glance
 
-Status values: **v0.1 done** (base and unique features work end to end on synthetic or fixture data, tests pass, report written); **v0.2 MOEX** (adapted to MOEX in the 2026-10-29 pass, offline tests pass, not yet run against a live token); **not started**. No project has run on real market data yet, so every result so far is synthetic. Tests are the default offline suite (`make test`).
+Status values: **v0.1 done** (base and unique features work end to end on synthetic or fixture data, tests pass, report written); **v0.2 MOEX** (adapted to MOEX, offline tests pass); **v0.3** (running on real MOEX data); **not started**. Real data exists since 2026-11-05/06 (T-Bank and ISS captures, the bulk candle history); research results in the reports are still synthetic. Tests are the default offline suite (`make test`). Status column updated 2026-11-06.
 
-| ID | Project | Track | Priority | Status (2026-10-29) |
+| ID | Project | Track | Priority | Status (2026-11-06) |
 |---|---|---|---|---|
 | S6 | Research Ledger (trial accounting, DSR/PBO gate) | Science core | A | v0.1 done; 89 tests; market-independent |
-| I1 | Market Tape Recorder (MOEX via T-Bank and AlgoPack, quality-certified) | Infra core | A | v0.2 MOEX: crypto adapters removed, T-Bank and AlgoPack adapters, recorder priority; awaits tokens; report outdated (crypto synthetic) |
-| I2 | Point-in-time Store (bitemporal "as-known-at"; central hub; market slice for the terminal) | Infra core | A | v0.2 MOEX: MOEX datasets, live append, market-slice API and stream |
+| I1 | Market Tape Recorder (MOEX via T-Bank and AlgoPack, quality-certified) | Infra core | A | v0.3 live: T-Bank via SPKI key pinning (no Russian CA trusted), read-only allowlist, first real captures (T-Bank, ISS); bulk history downloaded (282 TQBR shares + T-Capital funds: 829,744 day rows, 28.6M 1-minute rows over 12 months) and `scripts/download-all.sh`; zero-fee fund list; 138 tests; AlgoPack awaits a token |
+| I2 | Point-in-time Store (bitemporal "as-known-at"; central hub; market slice for the terminal) | Infra core | A | v0.3: real T-Bank/ISS tape and bulk candles ingested; live-edge slice cache (p95 20 ms); CBR key rate and CPI vintages (`pit fetch-macro`); 92 tests |
 | S1 | TSFM Arena + rank-tuned finance foundation model | Science | A | v0.1 done; 71 tests; synthetic panel, to be pointed at MOEX stocks via I2 |
 | S7 | LLM leakage probe + TinyChrono point-in-time tiny LMs | Science | A | Partly done: probe framework v0.1 (66 tests); TinyChrono only toy-sized; no real LLM probed |
-| I5 | Multi-fidelity backtest orchestrator with reality-calibrated fills | Infra | A | v0.1 done; 76 tests; market-independent, needs MOEX venue config |
-| S8 | Agent Arena (agents and strategies against each other) | Science | A | v0.1 framework done; 81 tests; no real LLM run; LLM agents optional because of token cost |
-| I9 | Risk-gated MCP agent gateway (exchange-agnostic, with a market-mirroring sandbox) | Infra | A | v0.2 MOEX: broker-adapter boundary, built-in mirror sandbox, T-Bank sandbox broker |
-| S3 | Reactive LOB simulator for MOEX stocks + sim-to-real gap score | Science | A | v0.2 MOEX: MOEX lot/tick/price-band/session model, MOEX scenarios; report outdated (crypto synthetic) |
-| I6 | Shadow Exchange sandbox (MOEX books via T-Bank/AlgoPack; T-Bank sandbox as baseline) | Infra | B | v0.2 MOEX: MOEX fees and lots, T-Bank live feed, T-Bank sandbox comparison; report outdated |
+| I5 | Multi-fidelity backtest orchestrator with reality-calibrated fills | Infra | A | v0.2 MOEX: MOEX default market, T-Invest commission (0.25%, 0% T-Capital funds), report rerun; 88 tests; crypto as optional profile |
+| S8 | Agent Arena (agents and strategies against each other) | Science | A | v0.2 MOEX: MOEX demo season and fees matching I9, report rerun; 88 tests; no real LLM run |
+| I9 | Risk-gated MCP agent gateway (exchange-agnostic, with a market-mirroring sandbox) | Infra | A | v0.2 MOEX: broker-adapter boundary, local mirror sandbox with T-Invest commission; T-Bank sandbox broker disabled (trading local only); report rerun; 107 tests |
+| S3 | Reactive LOB simulator for MOEX stocks + sim-to-real gap score | Science | A | v0.2 MOEX (2026-11-06): lots, ticks, price bands, auctions and uncross, halts, MOEX sessions, MOEX scenarios, T-Invest fees; crypto optional; report rerun; 55 tests; real calibration needs a longer T-Bank capture |
+| I6 | Shadow Exchange sandbox (MOEX books via T-Bank/AlgoPack; T-Bank sandbox as baseline) | Infra | B | v0.2 MOEX (2026-11-06): lots/ticks/bands, calendar and halts, T-Invest commission (matches I9 on 5,640 fills), tape-tail and slice-stream live feeds, offline T-Bank sandbox rules as baseline (no orders to T-Bank), MOEX and macro scenarios; report rerun on real T-Bank books; 145 tests |
 | I3 | Latency-stamped text and filings parsers | Infra | B | not started |
 | I4 | Copyability tracker for insiders, Congress, funds, on-chain whales | Infra | B | not started (MOEX-relevant part: issuer disclosures) |
 | I7 | Unified execution and risk engine (robots runtime) | Infra | B | not started |
 | S2 | LOB forecast-to-fill benchmark | Science | B | not started |
-| S4 | Robust RL execution and market making (the RL agent of the loop) | Science | B | not started; next in line after the data path |
+| S4 | Robust RL execution and market making (the RL agent of the loop) | Science | B | not started (a separate skeleton, ../tbank_rl, exists outside the workspace); the terminal defines its API (`rl/v1`) |
 | S5 | Honest Alpha Factory | Science | B | not started |
 | S9 | Time-to-signal benchmark + distilled tiny market-text models | Science | B | not started |
-| I8 | Research-integrity terminal (real-time market slice) | Infra | B | not started; consumes the I2 slice API |
+| I8 | Research-integrity terminal (real-time market slice) | Infra | B | v0.1 (2026-11-06): `research-terminal`, TradingView-style web UI (React, lightweight-charts) + BFF on 8611; market, time travel, data health, integrity, agents, sandbox, RL placeholder (`rl/v1`); mock world; 42 tests |
 | I10 | Strategy observability and drift alerts | Infra | C | not started |
 | S10 | Online conformal risk + regime sizing | Science | C | not started |
 | S11 | Cost-aware decision-focused allocator | Science | C | not started |

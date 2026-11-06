@@ -22,31 +22,74 @@ shared dependency constraints, and links to the project repositories.
 | [constraints.txt](constraints.txt) | Newest mutually compatible library versions for the platform (Python 3.13), resolved from [constraints.in](constraints.in) |
 | `data/` | The single data root (`TRADEQ_DATA_DIR`), shared by all projects, not versioned |
 
-## Project repositories (priority-A wave)
+## Repository index
 
-The first wave is the top ten projects of the specification table (section 1.3). Each one is an independent git
-repository in a subfolder of this workspace. Each repository has:
+Each project subfolder is its own git repository; this umbrella repository ignores them and links them here.
 
-- a v0.1 that runs end to end;
-- `docs/report.md`, a research report whose numbers `make report` reproduces;
-- `.claude/HANDOVER.md`, with its goal, architecture, state and the mistakes made.
+| Folder | Repository | What it is |
+|---|---|---|
+| `research-ledger/` | [https://github.com/AlexAsadullin/research-ledger](https://github.com/AlexAsadullin/research-ledger) | S6: counts every trial on the platform, deflates Sharpe (DSR, PSR, PBO, MinTRL) and gates promotion to live |
+| `market-tape-recorder/` | [https://github.com/AlexAsadullin/market-tape-recorder](https://github.com/AlexAsadullin/market-tape-recorder) | I1: records MOEX market data (T-Bank stream with key pinning, public ISS) with quality certificates per instrument-day; bulk history downloader |
+| `point-in-time-store/` | [https://github.com/AlexAsadullin/point-in-time-store](https://github.com/AlexAsadullin/point-in-time-store) | I2: bitemporal "as known at T" store, the platform hub; leakage guard, market slice and its stream, Russian macro vintages |
+| `tsfm-arena/` | [https://github.com/AlexAsadullin/tsfm-arena](https://github.com/AlexAsadullin/tsfm-arena) | S1: cutoff-aware benchmark of time-series foundation models on decision metrics, with rank-tuned fine-tuning |
+| `llm-leakage-probe/` | [https://github.com/AlexAsadullin/llm-leakage-probe](https://github.com/AlexAsadullin/llm-leakage-probe) | S7: measures LLM look-ahead memorisation per entity and date; TinyChrono point-in-time language models |
+| `backtest-orchestrator/` | [https://github.com/AlexAsadullin/backtest-orchestrator](https://github.com/AlexAsadullin/backtest-orchestrator) | I5: fidelity ladder over vectorbt, NautilusTrader, hftbacktest and the S3 simulator, with calibrated fills and parity checks |
+| `agent-arena/` | [https://github.com/AlexAsadullin/agent-arena](https://github.com/AlexAsadullin/agent-arena) | S8: statistical leaderboard for LLM agents and quant baselines trading through the gateway |
+| `risk-gated-mcp-gateway/` | [https://github.com/AlexAsadullin/risk-gated-mcp-gateway](https://github.com/AlexAsadullin/risk-gated-mcp-gateway) | I9: MCP server for AI agents with time-travel data, trial logging, budgets, pre-trade checks and the local mirror sandbox |
+| `reactive-lob-sim/` | [https://github.com/AlexAsadullin/reactive-lob-sim](https://github.com/AlexAsadullin/reactive-lob-sim) | S3: reactive MOEX order-book simulator (auctions, bands, sessions) with a calibrated impact coupling and a sim-to-real gap score |
+| `shadow-exchange/` | [https://github.com/AlexAsadullin/shadow-exchange](https://github.com/AlexAsadullin/shadow-exchange) | I6: shadow fills on real MOEX books with queue position and impact, micro and macro scenarios, T-Bank sandbox rules as a baseline |
+| `research-terminal/` | [https://github.com/AlexAsadullin/research-terminal](https://github.com/AlexAsadullin/research-terminal) (private) | I8: TradingView-style web terminal for the whole platform (BFF on port 8611) |
 
-All results so far come from synthetic data, because no recorded market data exists yet.
+Folders that belong to this umbrella repository:
 
-| ID | Project | Repository | Prompt | Tests | Headline result (synthetic data, 95% CI unless stated) |
-|---|---|---|---|---|---|
-| S6 | Research Ledger: trial accounting, DSR/PBO gate | [research-ledger/](research-ledger/) | [01](prompts/01-research-ledger.md) | 89 | Best of 200 noise strategies promoted in 8.0% (5.4 to 11.6) of runs by single-test PSR, 0.0% (0.0 to 1.3) by the ledger gate |
-| I1 | Market Tape Recorder: crypto CEX/DEX + MOEX, quality-certified | [market-tape-recorder/](market-tape-recorder/) | [02](prompts/02-market-tape-recorder.md) | 83 | Certificates caught 600 of 600 injected faults per type with 0 false alarms in 600 clean runs; overlapping reconnects lost 0 trades against 75 for naive ones |
-| I2 | Point-in-time Store: bitemporal "as-known-at" | [point-in-time-store/](point-in-time-store/) | [03](prompts/03-point-in-time-store.md) | 72 | A naive "latest data" backtest overstates the Sharpe ratio by 0.71 (0.67 to 0.76); 1484 of 1484 leaking queries refused |
-| S1 | TSFM Arena + rank-tuned finance FM | [tsfm-arena/](tsfm-arena/) | [04](prompts/04-tsfm-arena.md) | 71 | Rank IC after the model cutoff: ridge on 10 lags 0.057, Chronos-Bolt zero-shot 0.037, rank-tuned PatchTST 0.028 (90% CI) |
-| S7 | LLM leakage probe + TinyChrono | [llm-leakage-probe/](llm-leakage-probe/) | [05](prompts/05-llm-leakage-probe.md) | 66 | Combined probe precision 0.894 (0.833 to 0.935) and recall 0.882 (0.819 to 0.925) on planted leakage; anonymisation alone recalls 0.375 |
-| I5 | Multi-fidelity backtest orchestrator | [backtest-orchestrator/](backtest-orchestrator/) | [06](prompts/06-backtest-orchestrator.md) | 76 | Calibrated fill-probability error 0.021 against 0.752 for touch fills; parity check found 64 of 64 planted engine bugs |
-| S8 | Agent Arena | [agent-arena/](agent-arena/) | [07](prompts/07-agent-arena.md) | 81 | One run per agent named the wrong winner in 51.7% (46.0 to 57.3) of seasons; the arena protocol in 0.0% (0.0 to 1.3) |
-| I9 | Risk-gated MCP agent gateway | [risk-gated-mcp-gateway/](risk-gated-mcp-gateway/) | [08](prompts/08-risk-gated-mcp-gateway.md) | 74 | Blocked 1225 of 1225 adversarial violations with 0 of 2686 false refusals; an unguarded wrapper blocked none |
-| S3 | Reactive crypto LOB simulator + sim-to-real gap score | [reactive-lob-sim/](reactive-lob-sim/) | [09](prompts/09-reactive-lob-sim.md) | 43 | Gap score of tape replay 0.115 (0.075 to 0.191) against 0.285 to 0.383 for the generative and agent-based simulators |
-| I6 | Shadow Exchange sandbox with micro/macro scenarios | [shadow-exchange/](shadow-exchange/) | [10](prompts/10-shadow-exchange.md) | 92 | Testnet-style ideal fills credit a market maker with 3137 USDT/day against 865 for queue-aware fills; 15 ms latency turns this into a loss of 900 |
+| Folder | What it is |
+|---|---|
+| `prompts/` | the brief each project was built from; `00-platform-conventions.md` holds the shared rules, ports and contracts |
+| `docs/` | `moex-sources.md` (T-Bank Invest API and MOEX AlgoPack/ISS summary) and T-Invest contract notes |
+| `scripts/` | `download-all.sh`: downloads all MOEX history and loads it into I2 |
+| `data/` | the shared data root (`TRADEQ_DATA_DIR`), not versioned |
 
-Ports are listed in [prompts/00-platform-conventions.md](prompts/00-platform-conventions.md), section 4.
+## Project repositories
+
+Each project is an independent git repository in a subfolder of this workspace, with a `README.md` and a
+`.claude/HANDOVER.md` that hold its current state. The platform targets the Moscow Exchange (MOEX). T-Bank is
+used for market data only, reached through key pinning; trading is local, in I9's mirror sandbox, at the
+T-Invest commission (0.25% per fill, 0% for T-Capital funds). Crypto features are kept as optional modules
+that are off.
+
+| ID | Project | Repository | Tests (offline) | State and headline result (2026-11-06) |
+|---|---|---|---|---|
+| S6 | Research Ledger: trial accounting, DSR/PBO gate | [research-ledger/](research-ledger/) | 89 | Best of 200 noise strategies promoted in 8.0% of runs by single-test PSR, 0.0% by the ledger gate (synthetic) |
+| I1 | Market Tape Recorder: MOEX via T-Bank (pinned) and ISS | [market-tape-recorder/](market-tape-recorder/) | 138 | Real captures since 2026-11-05; bulk history for 282 instruments: 829,744 day rows and 28.6 million 1-minute rows (12 months), 0 failed requests |
+| I2 | Point-in-time Store: bitemporal "as-known-at", market slice | [point-in-time-store/](point-in-time-store/) | 92 | Real tape and candles ingested; slice p95 20 ms at the live edge; CBR key rate and CPI vintages |
+| S1 | TSFM Arena + rank-tuned finance FM | [tsfm-arena/](tsfm-arena/) | 71 | Rank IC after cutoff: ridge 0.057, Chronos-Bolt 0.037, rank-tuned PatchTST 0.028 (synthetic) |
+| S7 | LLM leakage probe + TinyChrono | [llm-leakage-probe/](llm-leakage-probe/) | 66 | Probe precision 0.894, recall 0.882 on planted leakage (synthetic) |
+| I5 | Multi-fidelity backtest orchestrator | [backtest-orchestrator/](backtest-orchestrator/) | 88 + 1 integration | MOEX market: calibrated fill-probability error 0.015 vs 0.764 for touch fills; parity found 64/64 planted bugs |
+| S8 | Agent Arena | [agent-arena/](agent-arena/) | 88 + 1 integration | One run per agent named the wrong winner in 51.7% of seasons, the arena protocol in 0.0% |
+| I9 | Risk-gated MCP agent gateway | [risk-gated-mcp-gateway/](risk-gated-mcp-gateway/) | 107 + 1 integration | MOEX fakes: blocked 1,181/1,181 violations, 0/2,730 false refusals |
+| S3 | Reactive MOEX LOB simulator + sim-to-real gap score | [reactive-lob-sim/](reactive-lob-sim/) | 55 | MOEX world: gap score of tape replay 0.133 (0.090 to 0.223) vs 0.328 to 0.523 for reactive simulators |
+| I6 | Shadow Exchange sandbox (MOEX, offline T-Bank sandbox baseline) | [shadow-exchange/](shadow-exchange/) | 145 | Real T-Bank books: market-maker fill rate 0.517 queue-aware vs 0.238 under T-Bank sandbox rules; 10,000-lot LKOH order 26.84 bps vs 0.00 |
+| I8 | Research terminal: TradingView-style web UI | [research-terminal/](research-terminal/) | 31 + 11 (UI) | v0.1: market, time travel, data health, integrity, agents, sandbox, RL placeholder (`rl/v1`) |
+
+Research results are synthetic unless the row says otherwise. Not started: S4 (the RL agent; a separate
+skeleton, `../tbank_rl`, exists outside this workspace), I3, I4, I7, I10, S2, S5, S9 to S12.
+
+## Data
+
+`scripts/download-all.sh` downloads all the history the platform needs and loads it into I2: the universe (TQBR
+shares and MOEX-listed T-Capital funds), daily candles for the full history, 1-minute candles for the last 12
+months, certificates, I2 ingest. It is resumable; `--smoke` runs three instruments. `cd point-in-time-store &&
+.venv/bin/pit fetch-macro` adds the CBR key rate and CPI vintages. The T-Bank token lives only in the root and
+`market-tape-recorder` `.env` files (both gitignored).
+
+## Terminal
+
+```bash
+cd research-terminal && make setup && make reproduce   # UI on a mock world: http://127.0.0.1:8611
+make serve                                             # the same UI against the running services
+```
+
+Ports are listed in [prompts/00-platform-conventions.md](prompts/00-platform-conventions.md), section 4 (I8 is 8611).
 
 **Real-service integration.** Opt-in tests start the sibling services from their own `.venv` and check these
 links:
@@ -55,6 +98,9 @@ links:
 - S8 against the real I9.
 
 ## How the pieces connect
+
+(I8, the terminal, reads every service below; S4, the RL agent, will observe the I2 slice and trade in the I9
+mirror sandbox.)
 
 ```
 I1 tape ──► I2 as-known-at store ──► S1 forecasts / S3 simulator / I5 backtests ──► S6 ledger (gate)

@@ -21,3 +21,7 @@ agent-arena/
 risk-gated-mcp-gateway/
 reactive-lob-sim/
 shadow-exchange/
+research-terminal/
+
+# Local tool settings (absolute paths)
+.claude/launch.json

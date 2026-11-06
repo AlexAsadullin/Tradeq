@@ -93,6 +93,7 @@ Full specification: `$ROOT/quant_platform_plan_full.md`. Read sections 1, 5 and 
 | I9 | risk-gated-mcp-gateway | mcp_gateway | 8608 | GATEWAY_ |
 | S3 | reactive-lob-sim | reactive_lob_sim | 8609 | SIM_ |
 | I6 | shadow-exchange | shadow_exchange | 8610 | SHADOW_ |
+| I8 | research-terminal | research_terminal | 8611 | TERMINAL_ |
 
 ## 5. Code quality
 
@@ -265,6 +266,21 @@ are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `
   built-in sandbox that matches orders against the I2 order book, see I9's README), `shadow` (I6 over contract
   6.4), `tbank-sandbox` (T-Bank SandboxService over REST). A new exchange or terminal is a new adapter class and
   a config entry; the MCP tools, budgets and risk checks do not change.
+
+
+### 6.9 Terminal and RL agent (revision 3, 2026-11-06)
+
+- The terminal (I8) is a backend-for-frontend on port 8611 serving `/api/v1/*` and the web UI. It reads the
+  other services only through their contracts (6.1 to 6.8) and holds the I9 admin key server-side. It never
+  sends secrets or T-Bank orders to the browser.
+- RL agent (S4) API `rl/v1` (I8 `docs/rl-api-contract.md`): policies, training runs (each an S6 trial, source
+  `s4`), live evaluations in I9's mirror sandbox, and promote/demote decisions gated by S6. The observation is the
+  6.7 market slice. Until S4 exists, I8 serves the contract from a stub.
+- Trading is local only. Paper orders go to I9's mirror sandbox (I6 when it runs). T-Bank is used for market data
+  only, through I1 with SPKI key pinning, and the T-Bank sandbox broker is disabled.
+- Commission (T-Invest basic tariff, user decision 2026-11-05): 0.25% of trade value per fill, maker and taker
+  alike, rounded half-up to the kopek; 0% for T-Capital funds, whose list is
+  `$TRADEQ_DATA_DIR/market-tape-recorder/reference/tbank_zero_fee_funds.json` (`funds`, `base_tickers`).
 
 ## 7. Testing
 
