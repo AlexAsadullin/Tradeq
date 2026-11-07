@@ -5,7 +5,6 @@ As of 2026-11-08.
 ## User actions
 
 - Make `research-terminal` and `robust-mm-rl` public on GitHub (both private; the deck and README link to them).
-- Put `TBANK_TOKEN` into `market-tape-recorder/.env` on the Linux host (by hand, never in chat).
 - Decide the GPU route for the RX 580 (robust-mm-rl `docs/gpu.md`): CPU only, or a community gfx803 ROCm
   container (PyTorch 2.6, needs the `docker` group).
 - Decide whether I2 gets a market knowledge time for backfilled history (for example `ts_close` plus a lag),
@@ -33,3 +32,10 @@ As of 2026-11-08.
 - I9: add connection-failure and order-resend scenarios.
 - Not started: S2, S5, S9–S12, I3, I4, I7, I10. Root `CLAUDE.md` points here.
 - The hackathon application answer texts are not stored in the repo.
+
+## In progress (2026-11-08)
+
+1. 1-minute history download (about 3 hours); then `make -C robust-mm-rl dataset`, `smoke-train`, and commit
+   `robust-mm-rl/results/`.
+2. I1: resolve T-Capital funds with `EtfBy` in the recorder so TMOS and TGLD books are recorded.
+3. Run the background services under systemd user units so they survive a reboot.

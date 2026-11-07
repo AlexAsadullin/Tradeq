@@ -63,3 +63,15 @@ queries are answered as known at a session clock T; queries that would read the 
 reported to S6. Each query returns a fingerprint that reproduces it exactly (the fingerprint excludes
 live-cache settings). The market slice (`GET /v1/slice?known_at=`) returns every metric per instrument as of T,
 with a streaming variant for the terminal; the live edge is cached (p95 20 ms).
+
+## Linux host runs (2026-11-08)
+
+- Token: in the umbrella `.env` and copied to `market-tape-recorder/.env` (both mode 600, gitignored).
+- `scripts/download-all.sh` started 01:19 MSK: daily done (829,995 rows, 282 instruments); 1-minute running
+  (84,860 chunks, about 3 hours). Logs in `data/logs/`. Live progress in
+  `data/market-tape-recorder/download/progress-<1d|1m>.json`.
+- Continuous T-Bank recording of 22 liquid shares (books 20 levels, trades, candles, status) since 01:20 MSK with
+  `data/market-tape-recorder/config/record-liquid.yaml`; the funds TMOS and TGLD fail resolution (`ShareBy` 404).
+- Long-running background processes on the host: `tape record`, `pit serve` (8603), `rl serve` (8612),
+  `terminal serve` (8611). They don't survive a reboot; restart them with the `make serve` / `tape record`
+  commands above.

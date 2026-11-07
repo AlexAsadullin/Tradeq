@@ -23,3 +23,6 @@
 | 2026-11-08 | S4 trains on the CPU; torch from the CPU index | RX 580 is gfx803: no official ROCm/PyTorch; OpenCL hung the GPU; Vulkan has no training stack; PPO step 10 ms on CPU |
 | 2026-11-08 | S4 datasets: I2 queries at one cutoff with fingerprints, chronological 70/15/15 splits, 2-day embargo, locked test split | Reproducibility, no look-ahead, every test look is a trial |
 | 2026-11-08 | Data scope: candles again plus continuous T-Bank book recording for liquid names | Books cannot be downloaded; execution RL needs them |
+| 2026-11-08 | RL dashboard lives in the research terminal's RL page, fed by S4 `rl serve` (rl/v1 revision 2, `status`) | User wants one web app with metrics, state, results and progress |
+| 2026-11-08 | RL results are kept in git (`robust-mm-rl/results/`, append-only) plus full artifacts in the data root | User: "do not lose them" |
+| 2026-11-08 | I1 writes download progress files (contract 6.2) | The dashboard needs progress and ETA |

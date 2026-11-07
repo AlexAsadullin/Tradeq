@@ -57,7 +57,7 @@ the user must switch them to public manually, the tool is not allowed to create 
 | S3 | reactive-lob-sim | 8609 | reactive_lob_sim | Reactive MOEX order-book simulator (lots, ticks, bands, auctions, halts), impact κ, sim-to-real gap G | 55 |
 | I6 | shadow-exchange | 8610 | shadow_exchange | Shadow fills on real MOEX books, queue position, impact, latency; offline T-Bank sandbox rules as baseline | 145 |
 | I8 | research-terminal | 8611 | research_terminal | TradingView-style web UI (React, lightweight-charts) + FastAPI BFF; mock world; RL placeholder `rl/v1` | 31 + 11 UI |
-| S4 | robust-mm-rl | 8612 (reserved) | robust_mm_rl | RL execution: versioned datasets from I2, bar-level execution env, TWAP baseline, PPO smoke trainer, device layer | 22 |
+| S4 | robust-mm-rl | 8612 | robust_mm_rl | RL execution: versioned datasets from I2, bar-level execution env, TWAP baseline, PPO trainer, rl/v1 service with pipeline status, results registry in `results/` | 28 |
 
 Env prefixes: LEDGER_, TAPE_, PIT_, TSFM_, LEAKAGE_, BT_, ARENA_, GATEWAY_, SIM_, SHADOW_, TERMINAL_, RL_.
 
@@ -75,7 +75,8 @@ I1 tape ──► I2 as-known-at store ──► S1 forecasts / S3 simulator / I
    S8 arena ──┘                                                            promotion to live (I7, later)
 ```
 
-I8 reads every service. S4 (`robust-mm-rl`) builds datasets from I2 queries (6.3) and will trade in the I9
+I8 reads every service; its RL page is the RL dashboard (stages, progress, ETA, live run, results) on S4's
+`/v1/rl/status`. S4 (`robust-mm-rl`) builds datasets from I2 queries (6.3) and will trade in the I9
 mirror sandbox and serve the `rl/v1` contract (defined in research-terminal `docs/rl-api-contract.md`). Repos never
 import each other's code; each ships typed clients and offline fallbacks. Opt-in integration tests: I9 against
 real I2, I5, S6; I5 against real I2, S6; S8 against real I9.
