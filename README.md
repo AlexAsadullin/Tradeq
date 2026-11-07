@@ -61,7 +61,7 @@ that are off.
 
 | ID | Project | Repository | Tests (offline) | State and headline result (2026-11-06) |
 |---|---|---|---|---|
-| S6 | Research Ledger: trial accounting, DSR/PBO gate | [research-ledger/](research-ledger/) | 89 | Best of 200 noise strategies promoted in 8.0% of runs by single-test PSR, 0.0% by the ledger gate (synthetic) |
+| S6 | Research Ledger: trial accounting, DSR/PBO gate | [research-ledger/](research-ledger/) | 89 | Best of 200 noise strategies promoted in 100% of runs by single-test PSR, 0.0% by the ledger gate (synthetic) |
 | I1 | Market Tape Recorder: MOEX via T-Bank (pinned) and ISS | [market-tape-recorder/](market-tape-recorder/) | 138 | Real captures since 2026-11-05; bulk history for 282 instruments: 829,744 day rows and 28.6 million 1-minute rows (12 months), 0 failed requests |
 | I2 | Point-in-time Store: bitemporal "as-known-at", market slice | [point-in-time-store/](point-in-time-store/) | 92 | Real tape and candles ingested; slice p95 20 ms at the live edge; CBR key rate and CPI vintages |
 | S1 | TSFM Arena + rank-tuned finance FM | [tsfm-arena/](tsfm-arena/) | 71 | Rank IC after cutoff: ridge 0.057, Chronos-Bolt 0.037, rank-tuned PatchTST 0.028 (synthetic) |
