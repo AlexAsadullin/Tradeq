@@ -27,7 +27,6 @@ commission and after the queue execution model.
   project folders are separate git repos and are gitignored by the umbrella.
 - Specification: `quant_platform_plan_full.md` (science track S1–S12, infrastructure track I1–I10,
   architecture, section 1.3 status table, section 5.4 real-time RL loop).
-- `PLAN-moex.md`: the checklist of the MOEX pivot (2026-10-29) and the 2026-11-05/06 pass.
 - `prompts/`: the brief each repo was built from; `00-platform-conventions.md` defines shared rules, ports and
   HTTP/file contracts (section 6). `11-readme-and-research-report-standards.md` defines doc standards.
 - `docs/moex-sources.md`: T-Bank Invest API and MOEX AlgoPack/ISS summary; `docs/tinvest-contracts/*.proto`.

@@ -19,6 +19,24 @@ Last full update: 2026-11-07.
 | [decisions-log.md](decisions-log.md) | Dated decisions and why they were made |
 | [open-items.md](open-items.md) | What is not done, known gaps, next steps |
 
+## Unmovable files
+
+These paths are linked from the T-Bank hackathon application. Never move, rename or delete them:
+
+- `quant_platform_plan_full.md` (the full specification; also the only plan file kept at the root)
+- `docs/hackathon/architecture.md`
+- `docs/hackathon/prototype.md`
+- `docs/hackathon/calculation.md`
+- `docs/hackathon/research.docx`
+- `docs/hackathon/presentation.pdf`
+- the repository itself, https://github.com/AlexAsadullin/Tradeq (keep it public, branch `main`)
+
+## Plans
+
+Finished plans are deleted; the unfinished parts live in [open-items.md](open-items.md). `PLAN-moex.md` (MOEX
+pivot, 2026-10-29 to 2026-11-06) was fully done except the S4 RL agent and was removed on 2026-11-07.
+`prompts/` holds the project briefs, which are specifications rather than plans, and stays in place.
+
 ## Rules for keeping this memory
 
 - Update these files in the same commit as any change that makes them wrong (a new result, a new repo, a
