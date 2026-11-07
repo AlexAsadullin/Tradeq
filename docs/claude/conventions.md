@@ -10,7 +10,10 @@ The full rules are in `prompts/00-platform-conventions.md`; that file wins on en
 - Standard targets in every repo: `make setup lint typecheck test reproduce` (plus `serve`, `report` where
   relevant). Tests run offline by default; integration tests are opt-in.
 - Python 3.13 in a per-repo `.venv` created with `uv`. Overlapping packages pinned exactly to
-  `constraints.txt`.
+  `constraints.txt`. On the Linux host uv is in `~/.local/bin` (not on the default PATH of non-login shells)
+  and Python 3.13 is uv-managed; the system Python is 3.14.
+- torch on Linux comes from the PyTorch CPU index (`[tool.uv.sources]`, see robust-mm-rl), so no NVIDIA
+  packages are installed.
 - No hardcoding: one pydantic-settings object per project; defaults in `config/settings.yaml`, overrides from
   env (`<PREFIX>_SECTION__KEY`), secrets only from env.
 - One data root: `TRADEQ_DATA_DIR` (= `$ROOT/data`), each repo writes to `data/<repo>/`. Never commit data.
@@ -19,7 +22,7 @@ The full rules are in `prompts/00-platform-conventions.md`; that file wins on en
 
 - Commit in small logical steps with imperative messages. Every commit ends with
   `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` (or the attribution the current session asks for).
-- All 11 repos and the umbrella have GitHub remotes under AlexAsadullin and are pushed. The user works on
+- All 12 repos and the umbrella have GitHub remotes under AlexAsadullin and are pushed. The user works on
   `main` directly; hackathon materials are committed straight to `main` of the umbrella.
 - The umbrella gitignores the project folders; never add them to the umbrella.
 - Untracked `.DS_Store` files appear in research-terminal; do not commit them.

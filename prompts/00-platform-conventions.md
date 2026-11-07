@@ -94,6 +94,7 @@ Full specification: `$ROOT/quant_platform_plan_full.md`. Read sections 1, 5 and 
 | S3 | reactive-lob-sim | reactive_lob_sim | 8609 | SIM_ |
 | I6 | shadow-exchange | shadow_exchange | 8610 | SHADOW_ |
 | I8 | research-terminal | research_terminal | 8611 | TERMINAL_ |
+| S4 | robust-mm-rl | robust_mm_rl | 8612 (reserved for the `rl/v1` provider; no service yet) | RL_ |
 
 ## 5. Code quality
 

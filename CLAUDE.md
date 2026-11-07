@@ -1,7 +1,7 @@
 # Tradeq workspace
 
 Before any work, read [docs/claude/README.md](docs/claude/README.md) and the files it lists. They hold the
-long-term context of this workspace: the 11 project repositories and their ports, data and T-Bank access
+long-term context of this workspace: the 12 project repositories and their ports, data and T-Bank access
 rules, headline results, hackathon materials, the user's preferences and the decisions so far.
 
 Hard rules (details in docs/claude):

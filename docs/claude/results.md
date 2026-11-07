@@ -86,3 +86,9 @@ gating removes 93% of the return earned from leaks (4.48% → 0.31% per leaked c
 All confirmed: H1 trial accounting cuts noise (synthetic); H2 sandbox understates large-order costs (real
 books) and passive fill rate (real books, z ≈ 2.0); H3 probe finds LLM memory (synthetic); H4 arena protocol
 does not name a wrong winner (synthetic); gateway blocks violations (synthetic episodes).
+
+## S4 robust-mm-rl (pipeline checks, not research results; 2026-11-08)
+
+One Adam step of a 64-256-256-1 MLP, batch 4,096: 9.7 to 10.3 ms on the CPU (torch 2.14.1, 12 threads, Xeon
+E5-2673 v3); 150 ms for 64-1024-1024-1 at batch 8,192. tinygrad on OpenCL (rusticl) hung the RX 580. Source:
+robust-mm-rl `docs/gpu.md`.

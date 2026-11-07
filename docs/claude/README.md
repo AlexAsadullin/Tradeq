@@ -1,16 +1,16 @@
 # Context for AI assistants
 
 This folder is the long-term memory of the Tradeq workspace for Claude and other coding agents. A new session
-should read it before doing anything, because the platform is large (11 repositories, a 644-line
+should read it before doing anything, because the platform is large (12 repositories, a 644-line
 specification, real market data, hackathon materials) and most decisions are not visible from the code alone.
 
-Last full update: 2026-11-07.
+Last full update: 2026-11-07; S4 (RL) and the Linux training host added 2026-11-08.
 
 ## Read in this order
 
 | File | What it holds |
 |---|---|
-| [project-overview.md](project-overview.md) | What Tradeq is, the 11 repositories, ports, status, how they connect |
+| [project-overview.md](project-overview.md) | What Tradeq is, the 12 repositories, ports, status, how they connect |
 | [conventions.md](conventions.md) | Engineering rules, layout, git rules, documentation rules for every repo |
 | [data-and-tbank.md](data-and-tbank.md) | T-Invest token rules, key pinning, commissions, downloaded data, data root |
 | [results.md](results.md) | Every headline number, where it comes from, and its caveats |

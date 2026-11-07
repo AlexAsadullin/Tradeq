@@ -69,7 +69,7 @@ Status values: **v0.1 done** (base and unique features work end to end on synthe
 | I4 | Copyability tracker for insiders, Congress, funds, on-chain whales | Infra | B | not started (MOEX-relevant part: issuer disclosures) |
 | I7 | Unified execution and risk engine (robots runtime) | Infra | B | not started |
 | S2 | LOB forecast-to-fill benchmark | Science | B | not started |
-| S4 | Robust RL execution and market making (the RL agent of the loop) | Science | B | not started (a separate skeleton, ../tbank_rl, exists outside the workspace); the terminal defines its API (`rl/v1`) |
+| S4 | Robust RL execution and market making (the RL agent of the loop) | Science | B | v0.1 started (2026-11-08): `robust-mm-rl`; dataset builder from I2 (contract 6.3, fingerprints, chronological splits with a locked test split), bar-level execution environment (0.25% fees, lots, participation cap, randomised impact), TWAP baseline, PPO smoke trainer, CPU training (the RX 580 is gfx803, see its docs/gpu.md); 22 tests; no research result yet; the terminal defines its API (`rl/v1`) |
 | S5 | Honest Alpha Factory | Science | B | not started |
 | S9 | Time-to-signal benchmark + distilled tiny market-text models | Science | B | not started |
 | I8 | Research-integrity terminal (real-time market slice) | Infra | B | v0.1 (2026-11-06): `research-terminal`, TradingView-style web UI (React, lightweight-charts) + BFF on 8611; market, time travel, data health, integrity, agents, sandbox, RL placeholder (`rl/v1`); mock world; 42 tests |

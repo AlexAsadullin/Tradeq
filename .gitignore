@@ -22,6 +22,7 @@ risk-gated-mcp-gateway/
 reactive-lob-sim/
 shadow-exchange/
 research-terminal/
+robust-mm-rl/
 
 # Local tool settings (absolute paths)
 .claude/launch.json

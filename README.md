@@ -43,6 +43,7 @@ Each project subfolder is its own git repository; this umbrella repository ignor
 | `reactive-lob-sim/` | [https://github.com/AlexAsadullin/reactive-lob-sim](https://github.com/AlexAsadullin/reactive-lob-sim) | S3: reactive MOEX order-book simulator (auctions, bands, sessions) with a calibrated impact coupling and a sim-to-real gap score |
 | `shadow-exchange/` | [https://github.com/AlexAsadullin/shadow-exchange](https://github.com/AlexAsadullin/shadow-exchange) | I6: shadow fills on real MOEX books with queue position and impact, micro and macro scenarios, T-Bank sandbox rules as a baseline |
 | `research-terminal/` | [https://github.com/AlexAsadullin/research-terminal](https://github.com/AlexAsadullin/research-terminal) (private) | I8: TradingView-style web terminal for the whole platform (BFF on port 8611) |
+| `robust-mm-rl/` | [https://github.com/AlexAsadullin/robust-mm-rl](https://github.com/AlexAsadullin/robust-mm-rl) (private) | S4: robust RL for execution and market making, trained on I2 history, benchmarked against closed-form control |
 
 Folders that belong to this umbrella repository:
 
@@ -74,9 +75,9 @@ that are off.
 | S3 | Reactive MOEX LOB simulator + sim-to-real gap score | [reactive-lob-sim/](reactive-lob-sim/) | 55 | MOEX world: gap score of tape replay 0.133 (0.090 to 0.223) vs 0.328 to 0.523 for reactive simulators |
 | I6 | Shadow Exchange sandbox (MOEX, offline T-Bank sandbox baseline) | [shadow-exchange/](shadow-exchange/) | 145 | Real T-Bank books: market-maker fill rate 0.517 queue-aware vs 0.238 under T-Bank sandbox rules; 10,000-lot LKOH order 26.84 bps vs 0.00 |
 | I8 | Research terminal: TradingView-style web UI | [research-terminal/](research-terminal/) | 31 + 11 (UI) | v0.1: market, time travel, data health, integrity, agents, sandbox, RL placeholder (`rl/v1`) |
+| S4 | Robust RL execution (the RL agent of the loop) | [robust-mm-rl/](robust-mm-rl/) | 22 | v0.1 started 2026-11-08: versioned datasets from I2 with fingerprints and a locked test split, bar-level execution env, TWAP baseline, PPO smoke trainer; CPU training (RX 580 is gfx803); no research result yet |
 
-Research results are synthetic unless the row says otherwise. Not started: S4 (the RL agent; a separate
-skeleton, `../tbank_rl`, exists outside this workspace), I3, I4, I7, I10, S2, S5, S9 to S12.
+Research results are synthetic unless the row says otherwise. Not started: I3, I4, I7, I10, S2, S5, S9 to S12.
 
 ## Data
 

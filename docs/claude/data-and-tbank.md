@@ -48,12 +48,17 @@ about 2 minutes). Real calibration of S3 and a firm fill-rate result need weeks 
 
 ## Data root layout
 
-`TRADEQ_DATA_DIR=/Users/alexasadullin/PycharmProjects/Tradeq/data`, one folder per repo plus `cache/`. About
-3.6 GB on 2026-11-07. Never committed.
+`TRADEQ_DATA_DIR=/home/alexasadullin/PycharmProjects/Tradeq/data` on the Linux host (was
+`/Users/alexasadullin/PycharmProjects/Tradeq/data` on the Mac), one folder per repo plus `cache/`. About 3.6 GB
+on the Mac on 2026-11-07. Never committed. The Mac data was not copied; the Linux host downloads it again with
+`scripts/download-all.sh` once `TBANK_TOKEN` is in `market-tape-recorder/.env` (the user adds it by hand).
+S4 datasets: `data/robust-mm-rl/datasets/<id>/` (layout in robust-mm-rl `docs/datasets.md`).
 
 ## Bitemporal model (I2)
 
-Every row has valid time (what moment the fact describes) and knowledge time (when it became knowable). Research
+Every row has valid time (what moment the fact describes) and knowledge time (when it became knowable).
+Bulk-downloaded history has knowledge time = download time (I1 `ts_local`), so a slice or query at a
+historical T returns none of it; S4 extracts at the build cutoff and enforces bar-close causality itself. Research
 queries are answered as known at a session clock T; queries that would read the future are refused and
 reported to S6. Each query returns a fingerprint that reproduces it exactly (the fingerprint excludes
 live-cache settings). The market slice (`GET /v1/slice?known_at=`) returns every metric per instrument as of T,

@@ -22,7 +22,9 @@ commission and after the queue execution model.
 
 ## Workspace
 
-- Root: `/Users/alexasadullin/PycharmProjects/Tradeq` (umbrella repo, public:
+- Root: `/home/alexasadullin/PycharmProjects/Tradeq` on the Linux training host since 2026-11-08 (Ubuntu 26.04,
+  Xeon E5-2673 v3 with 24 threads, 15 GB RAM, AMD RX 580 8 GB); it was `/Users/alexasadullin/PycharmProjects/Tradeq`
+  on the Mac before. The repos are cloned with `gh repo clone AlexAsadullin/<repo>` (umbrella repo, public:
   https://github.com/AlexAsadullin/Tradeq). It holds the spec, prompts, constraints, docs and scripts. The
   project folders are separate git repos and are gitignored by the umbrella.
 - Specification: `quant_platform_plan_full.md` (science track S1–S12, infrastructure track I1–I10,
@@ -32,13 +34,15 @@ commission and after the queue execution model.
 - `docs/moex-sources.md`: T-Bank Invest API and MOEX AlgoPack/ISS summary; `docs/tinvest-contracts/*.proto`.
 - `scripts/download-all.sh`: downloads all MOEX history into I2 (see data-and-tbank.md).
 - `docs/hackathon/`: T-Bank hackathon materials (Russian); `docs/hackathon/src/` their build sources.
-- `data/` (gitignored, about 3.6 GB on 2026-11-07): the shared data root `TRADEQ_DATA_DIR`.
-- `../tbank_rl` (outside the workspace): an older RL skeleton, not part of Tradeq yet.
+- `data/` (gitignored): the shared data root `TRADEQ_DATA_DIR`. About 3.6 GB on the Mac on 2026-11-07; the
+  Linux host downloads it again (see data-and-tbank.md).
+- GitHub `tbank_rl` (an LLM and fundamentals pipeline) and `trading_robots_rl` (old C#) are older projects, not
+  part of Tradeq; S4 does not reuse them.
 
-## The 11 repositories
+## The 12 repositories
 
-All under https://github.com/AlexAsadullin/<repo>. All public except `research-terminal` (private; the user
-must switch it to public manually, the tool was not allowed to create a public repo).
+All under https://github.com/AlexAsadullin/<repo>. All public except `research-terminal` and `robust-mm-rl` (private;
+the user must switch them to public manually, the tool is not allowed to create a public repo).
 
 | ID | Repo | Port | Package | What it does | Offline tests |
 |---|---|---|---|---|---|
@@ -53,11 +57,12 @@ must switch it to public manually, the tool was not allowed to create a public r
 | S3 | reactive-lob-sim | 8609 | reactive_lob_sim | Reactive MOEX order-book simulator (lots, ticks, bands, auctions, halts), impact κ, sim-to-real gap G | 55 |
 | I6 | shadow-exchange | 8610 | shadow_exchange | Shadow fills on real MOEX books, queue position, impact, latency; offline T-Bank sandbox rules as baseline | 145 |
 | I8 | research-terminal | 8611 | research_terminal | TradingView-style web UI (React, lightweight-charts) + FastAPI BFF; mock world; RL placeholder `rl/v1` | 31 + 11 UI |
+| S4 | robust-mm-rl | 8612 (reserved) | robust_mm_rl | RL execution: versioned datasets from I2, bar-level execution env, TWAP baseline, PPO smoke trainer, device layer | 22 |
 
-Env prefixes: LEDGER_, TAPE_, PIT_, TSFM_, LEAKAGE_, BT_, ARENA_, GATEWAY_, SIM_, SHADOW_, TERMINAL_.
+Env prefixes: LEDGER_, TAPE_, PIT_, TSFM_, LEAKAGE_, BT_, ARENA_, GATEWAY_, SIM_, SHADOW_, TERMINAL_, RL_.
 
 Status (section 1.3 of the spec, 2026-11-06): S6, S1 v0.1; S7 partly done; I5, S8, I9, S3, I6 v0.2 MOEX; I1,
-I2 v0.3 on real data; I8 v0.1. Not started: S4 (RL agent), S2, S5, S9–S12, I3, I4, I7, I10. Research results
+I2 v0.3 on real data; I8 v0.1; S4 v0.1 started 2026-11-08. Not started: S2, S5, S9–S12, I3, I4, I7, I10. Research results
 in module reports are synthetic unless stated otherwise.
 
 ## How the pieces connect
@@ -70,8 +75,8 @@ I1 tape ──► I2 as-known-at store ──► S1 forecasts / S3 simulator / I
    S8 arena ──┘                                                            promotion to live (I7, later)
 ```
 
-I8 reads every service. S4, the future RL agent, will observe the I2 market slice and trade in the I9 mirror
-sandbox through the `rl/v1` contract (defined in research-terminal `docs/rl-api-contract.md`). Repos never
+I8 reads every service. S4 (`robust-mm-rl`) builds datasets from I2 queries (6.3) and will trade in the I9
+mirror sandbox and serve the `rl/v1` contract (defined in research-terminal `docs/rl-api-contract.md`). Repos never
 import each other's code; each ships typed clients and offline fallbacks. Opt-in integration tests: I9 against
 real I2, I5, S6; I5 against real I2, S6; S8 against real I9.
 

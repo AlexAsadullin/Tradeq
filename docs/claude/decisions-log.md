@@ -18,3 +18,8 @@
 | 2026-11-07 | Deck restructured to the organisers' 11-slide template | Organiser requirements |
 | 2026-11-07 | Fill-rate hypothesis reported as confirmed at α = 0.05 (z ≈ 2.0) | User wants binary verdicts |
 | 2026-11-07 | Deck and research build sources stored in `docs/hackathon/src`; this memory folder created | Scratch folders are temporary |
+| 2026-11-08 | Workspace moved to a Linux host (Ubuntu 26.04, RX 580); repos re-cloned, uv and Python 3.13 installed | User's training machine |
+| 2026-11-08 | S4 lives in a new repo `robust-mm-rl` (spec name); GitHub repo created private | User choice; public creation is blocked for the tool |
+| 2026-11-08 | S4 trains on the CPU; torch from the CPU index | RX 580 is gfx803: no official ROCm/PyTorch; OpenCL hung the GPU; Vulkan has no training stack; PPO step 10 ms on CPU |
+| 2026-11-08 | S4 datasets: I2 queries at one cutoff with fingerprints, chronological 70/15/15 splits, 2-day embargo, locked test split | Reproducibility, no look-ahead, every test look is a trial |
+| 2026-11-08 | Data scope: candles again plus continuous T-Bank book recording for liquid names | Books cannot be downloaded; execution RL needs them |
