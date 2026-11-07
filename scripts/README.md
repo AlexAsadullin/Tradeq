@@ -9,3 +9,9 @@ Resumable; `--smoke` for SBER, GAZP, TMOS only. See market-tape-recorder/README.
 S4 8612, terminal 8611); `start download record` adds the history download and the order-book recording;
 `status` shows jobs, ports and download progress; `stop [job]` stops with Ctrl-C semantics (the download keeps
 its checkpoint); `logs <job>` follows a log. Dashboard: http://127.0.0.1:8611/#rl.
+
+`night-run.sh`: download -> I2/S4/terminal -> dataset of the 24 liquid names -> `rl train` until `--until HH:MM`
+(default 09:00) -> results committed in robust-mm-rl (not pushed). Holds a sleep and idle inhibitor
+(systemd-inhibit and gnome-session-inhibit) for the whole run. Start it in the background with
+`scripts/stack.sh start night -- --until 09:00`; stop with `scripts/stack.sh stop night` (training then ends
+gracefully, evaluates, records and commits).

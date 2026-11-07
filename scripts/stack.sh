@@ -15,6 +15,7 @@
 #   terminal  web app with the RL dashboard, port 8611  ->  http://127.0.0.1:8611/#rl
 #   download  scripts/download-all.sh (resumable; extra args after --, e.g. start download -- --only minute)
 #   record    T-Bank order-book recording of the liquid names (until stopped)
+#   night     scripts/night-run.sh: download -> dataset -> training until a deadline -> results (no sleep)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -24,7 +25,7 @@ mkdir -p "$LOGS" "$RUN"
 export PATH="$HOME/.local/bin:$PATH"
 
 SERVICES=(i2 s4 terminal)
-ALL=(i2 s4 terminal download record)
+ALL=(i2 s4 terminal download record night)
 
 cmd_of() {
   case "$1" in
@@ -32,6 +33,7 @@ cmd_of() {
     s4) echo "cd '$ROOT/robust-mm-rl' && exec .venv/bin/rl serve" ;;
     terminal) echo "cd '$ROOT/research-terminal' && exec .venv/bin/terminal serve" ;;
     download) echo "cd '$ROOT' && exec scripts/download-all.sh ${EXTRA[*]:-}" ;;
+    night) echo "cd '$ROOT' && exec scripts/night-run.sh ${EXTRA[*]:-}" ;;
     record) echo "cd '$ROOT/market-tape-recorder' && exec .venv/bin/tape record --venue moex-tbank --config '$ROOT/data/market-tape-recorder/config/record-liquid.yaml'" ;;
     *) echo "unknown job: $1 (one of: ${ALL[*]})" >&2; exit 64 ;;
   esac
@@ -104,6 +106,6 @@ case "$action" in
   logs)
     [[ ${#JOBS[@]} -eq 1 ]] || { echo "usage: $0 logs <job>" >&2; exit 64; }
     exec tail -f "$LOGS/${JOBS[0]}.latest.log" ;;
-  -h|--help|help) sed -n '2,19p' "$0" ;;
-  *) echo "unknown action: $action" >&2; sed -n '2,19p' "$0"; exit 64 ;;
+  -h|--help|help) awk 'NR>1 && /^#/ {print; next} NR>1 {exit}' "$0" ;;
+  *) echo "unknown action: $action" >&2; awk 'NR>1 && /^#/ {print; next} NR>1 {exit}' "$0"; exit 64 ;;
 esac
