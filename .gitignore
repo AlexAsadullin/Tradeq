@@ -25,3 +25,11 @@ research-terminal/
 
 # Local tool settings (absolute paths)
 .claude/launch.json
+
+# Hackathon build outputs (sources live in docs/hackathon/src)
+docs/hackathon/src/research/node_modules/
+docs/hackathon/src/research/content.js
+docs/hackathon/src/research/raw.docx
+docs/hackathon/src/research/r.docx
+docs/hackathon/src/research/heads.json
+docs/hackathon/src/deck/deck.html

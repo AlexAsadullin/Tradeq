@@ -1,0 +1,52 @@
+{
+  "v": 4,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-07T13:40:00Z"
+  },
+  "lists": "css",
+  "title": "Tradeq — хакатон Т-Банка",
+  "cover": "cover",
+  "order": [
+    "cover",
+    "goal",
+    "analogs",
+    "stack",
+    "ml-validation",
+    "ml-execution",
+    "dl",
+    "rl",
+    "ai",
+    "roadmap",
+    "demo"
+  ],
+  "sections": {
+    "s1": {
+      "description": "Проблема, аналоги и ход решения",
+      "start": "cover"
+    },
+    "s2": {
+      "description": "Датасет, архитектура и стек",
+      "start": "stack"
+    },
+    "s3": {
+      "description": "Технические детали ML, DL, RL и AI",
+      "start": "ml-validation"
+    },
+    "s4": {
+      "description": "Планы и демонстрация",
+      "start": "roadmap"
+    }
+  },
+  "faces": {
+    "manrope": {
+      "family": "Manrope",
+      "href": "https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=IBM+Plex+Sans:wght@400;600&display=swap"
+    },
+    "ibm-plex-sans": {
+      "family": "IBM Plex Sans",
+      "href": "https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=IBM+Plex+Sans:wght@400;600&display=swap"
+    }
+  },
+  "designSystems": []
+}

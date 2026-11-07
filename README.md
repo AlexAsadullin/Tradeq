@@ -22,7 +22,9 @@ shared dependency constraints, and links to the project repositories.
 | [constraints.txt](constraints.txt) | Newest mutually compatible library versions for the platform (Python 3.13), resolved from [constraints.in](constraints.in) |
 | `data/` | The single data root (`TRADEQ_DATA_DIR`), shared by all projects, not versioned |
 
-**Hackathon materials (in Russian):** [docs/hackathon/](docs/hackathon/README.md): architecture diagram, prototype with screenshots, calculations.
+**Hackathon materials (in Russian):** [docs/hackathon/](docs/hackathon/README.md): architecture diagram, prototype with screenshots, calculations, research (docx), presentation (PDF); their build sources are in `docs/hackathon/src/`.
+
+**Context for AI assistants:** [CLAUDE.md](CLAUDE.md) and [docs/claude/](docs/claude/README.md) hold the long-term memory of this workspace.
 
 ## Repository index
 
@@ -47,7 +49,7 @@ Folders that belong to this umbrella repository:
 | Folder | What it is |
 |---|---|
 | `prompts/` | the brief each project was built from; `00-platform-conventions.md` holds the shared rules, ports and contracts |
-| `docs/` | `moex-sources.md` (T-Bank Invest API and MOEX AlgoPack/ISS summary) and T-Invest contract notes |
+| `docs/` | `moex-sources.md` (T-Bank Invest API and MOEX AlgoPack/ISS summary), T-Invest contract notes, `hackathon/` materials, `claude/` context for AI assistants |
 | `scripts/` | `download-all.sh`: downloads all MOEX history and loads it into I2 |
 | `data/` | the shared data root (`TRADEQ_DATA_DIR`), not versioned |
 
