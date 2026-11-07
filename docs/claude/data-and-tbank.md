@@ -72,6 +72,7 @@ with a streaming variant for the terminal; the live edge is cached (p95 20 ms).
   `data/market-tape-recorder/download/progress-<1d|1m>.json`.
 - Continuous T-Bank recording of 22 liquid shares (books 20 levels, trades, candles, status) since 01:20 MSK with
   `data/market-tape-recorder/config/record-liquid.yaml`; the funds TMOS and TGLD fail resolution (`ShareBy` 404).
-- Long-running background processes on the host: `tape record`, `pit serve` (8603), `rl serve` (8612),
-  `terminal serve` (8611). They don't survive a reboot; restart them with the `make serve` / `tape record`
-  commands above.
+- Long-running jobs (I2 8603, S4 8612, terminal 8611, download, record) are managed by `scripts/stack.sh`
+  (`start`, `stop`, `status`, `logs`). Every foreground `make serve` or download blocks its terminal and dies
+  with it; that is why the user's first attempt showed no dashboard during the download (2026-11-08). The jobs
+  don't survive a reboot.
