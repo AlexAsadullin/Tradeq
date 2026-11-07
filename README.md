@@ -22,6 +22,8 @@ shared dependency constraints, and links to the project repositories.
 | [constraints.txt](constraints.txt) | Newest mutually compatible library versions for the platform (Python 3.13), resolved from [constraints.in](constraints.in) |
 | `data/` | The single data root (`TRADEQ_DATA_DIR`), shared by all projects, not versioned |
 
+**Hackathon materials (in Russian):** [docs/hackathon/](docs/hackathon/README.md): architecture diagram, prototype with screenshots, calculations.
+
 ## Repository index
 
 Each project subfolder is its own git repository; this umbrella repository ignores them and links them here.
