@@ -10,6 +10,6 @@ Tradeq это платформа проверки торговых страте�
 | Репозитории | [индекс репозиториев](../../README.md#repository-index), главный репозиторий https://github.com/AlexAsadullin/Tradeq |
 | Технический прототип | [prototype.md](prototype.md), веб-терминал https://github.com/AlexAsadullin/research-terminal |
 | Расчеты | [calculation.md](calculation.md) |
+| Исследование | [research.docx](research.docx) |
+| Презентация | [presentation.pdf](presentation.pdf), 11 слайдов |
 | Другие материалы | [полная спецификация](../../quant_platform_plan_full.md), [контракты между модулями](../../prompts/00-platform-conventions.md), [контракт агента с подкреплением](https://github.com/AlexAsadullin/research-terminal/blob/main/docs/rl-api-contract.md), [сводка по источникам данных T-Invest и Мосбиржи](../moex-sources.md), [скрипт загрузки данных](../../scripts/download-all.sh) |
-
-Исследование и презентация будут добавлены позже.
