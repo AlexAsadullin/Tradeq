@@ -92,3 +92,11 @@ does not name a wrong winner (synthetic); gateway blocks violations (synthetic e
 One Adam step of a 64-256-256-1 MLP, batch 4,096: 9.7 to 10.3 ms on the CPU (torch 2.14.1, 12 threads, Xeon
 E5-2673 v3); 150 ms for 64-1024-1024-1 at batch 8,192. tinygrad on OpenCL (rusticl) hung the RX 580. Source:
 robust-mm-rl `docs/gpu.md`.
+Night run 2026-11-08 (`robust-mm-rl/results/runs.jsonl`, run `20261108T013845Z-ppo-s7`; real MOEX 1-minute bars,
+bar-level fill model with assumed impact): PPO on 10 liquid shares, 256 M steps in 7.1 h on CPU. Validation
+split, 1,000 paired episodes: shortfall 26.41 bps vs TWAP 27.80 bps, gain 1.39 bps, 95% CI [0.36, 2.42]. One seed;
+test split still locked.
+
+GPU (RX 580, ROCm 5.4 container, torch 1.13): the PPO loop runs at 7,340 steps/s on the GPU vs 10,731 on the CPU
+in the same build (0.68×) and 15,991 with the platform torch 2.14 on the CPU. An Adam step is 1.8× faster on the
+GPU at 64-256×2/batch 4,096 and 7.2× faster at 400-1024×4/batch 8,192. Source: robust-mm-rl `docs/gpu.md`.
