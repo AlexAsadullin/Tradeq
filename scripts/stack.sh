@@ -30,16 +30,21 @@ export PATH="$HOME/.local/bin:$PATH"
 SERVICES=(i2 s4 terminal)
 ALL=(i2 s4 terminal download record follow night funds llm)
 
+extra_args() {  # each extra argument shell-quoted, so "2026-11-09 19:00" stays one argument
+  [[ ${#EXTRA[@]} -gt 0 ]] && printf ' %q' "${EXTRA[@]}"
+  return 0
+}
+
 cmd_of() {
   case "$1" in
     i2) echo "cd '$ROOT/point-in-time-store' && exec nice -n 5 .venv/bin/pit serve" ;;
     s4) echo "cd '$ROOT/robust-mm-rl' && exec .venv/bin/rl serve" ;;
     terminal) echo "cd '$ROOT/research-terminal' && exec .venv/bin/terminal serve" ;;
-    download) echo "cd '$ROOT' && exec scripts/download-all.sh ${EXTRA[*]:-}" ;;
+    download) echo "cd '$ROOT' && exec scripts/download-all.sh $(extra_args)" ;;
     follow) echo "cd '$ROOT/point-in-time-store' && exec nice -n 5 .venv/bin/pit follow" ;;
-    funds) echo "cd '$ROOT' && exec scripts/funds-run.sh ${EXTRA[*]:-}" ;;
+    funds) echo "cd '$ROOT' && exec scripts/funds-run.sh $(extra_args)" ;;
     llm) echo "cd '$ROOT' && exec data/cache/llama.cpp/build/bin/llama-server -m '${LLM_MODEL:-$ROOT/data/cache/models/qwen2.5-0.5b-instruct-q4_k_m.gguf}' -ngl 99 --host 127.0.0.1 --port 8620" ;;
-    night) echo "cd '$ROOT' && exec scripts/night-run.sh ${EXTRA[*]:-}" ;;
+    night) echo "cd '$ROOT' && exec scripts/night-run.sh $(extra_args)" ;;
     record) echo "cd '$ROOT/market-tape-recorder' && exec .venv/bin/tape record --venue moex-tbank --config '$ROOT/data/market-tape-recorder/config/record-liquid.yaml'" ;;
     *) echo "unknown job: $1 (one of: ${ALL[*]})" >&2; exit 64 ;;
   esac
