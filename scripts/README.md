@@ -19,3 +19,9 @@ gracefully, evaluates, records and commits).
 `gpu-llm.sh`: GPU on the RX 580 without ROCm or Docker. It builds llama.cpp (pinned `b11869`) with Vulkan and serves
 a local OpenAI-compatible LLM for S7 and S8 (`stack.sh start llm`, port 8620). Steps: `check`, `build`, `model`,
 `verify`. Inference only; RL training stays on the CPU.
+
+`funds-run.sh`: the fund-trading RL pipeline (T-Capital funds, 0% commission): data refresh (fund bars, calendar,
+macro, live tape) -> services incl. the recorder and the I2 follower -> `rl funds-build` -> `rl funds-train`
+(offline PPO, then validation and the locked test against baselines) -> `rl funds-live` (hourly fine-tuning on new
+bars and live order books) -> results committed. Holds the sleep inhibitor. Start with
+`scripts/stack.sh start funds -- --offline-hours 6 --live-until "YYYY-MM-DD 19:00"`.
