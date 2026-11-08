@@ -291,7 +291,8 @@ are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `
   `GET status` (pipeline stages with progress and ETA, current run, results, expectations) and optional run
   progress fields; revision 3 (2026-11-08) adds `GET history` (every run: dataset, inputs, weights status, test
   results); revision 4 (2026-11-08) adds `GET datasets` (built training datasets described from their files,
-  shown with I2's `/v1/datasets/stats` on the terminal's Datasets screen). The stub serves only the mock world.
+  shown with I2's `/v1/datasets/stats` on the terminal's Datasets screen); revision 5 (2026-11-08) adds `GET live`
+  (the running job's agents, profit, validation checks and the market at each agent's simulated time). The stub serves only the mock world.
 - Trading is local only. Paper orders go to I9's mirror sandbox (I6 when it runs). T-Bank is used for market data
   only, through I1 with SPKI key pinning, and the T-Bank sandbox broker is disabled.
 - Commission (T-Invest basic tariff, user decision 2026-11-05): 0.25% of trade value per fill, maker and taker
