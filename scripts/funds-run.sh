@@ -51,6 +51,12 @@ fi
 DATA="$ROOT/data"
 STATE="$DATA/robust-mm-rl/pipeline.json"
 mkdir -p "$(dirname "$STATE")"
+# the plan lets the dashboard compute the end of the whole run (offline budget + live phase)
+python3 -c "
+import json, datetime as d, zoneinfo
+end = d.datetime.strptime('$live_until', '%Y-%m-%d %H:%M').replace(tzinfo=zoneinfo.ZoneInfo('Europe/Moscow'))
+json.dump({'pipeline': 'funds', 'offline_hours': float('$offline_hours'), 'live_until': end.isoformat()},
+          open('$DATA/robust-mm-rl/pipeline-plan.json', 'w'), indent=1)"
 STEPS=("data refresh" "services" "dataset" "offline training + test" "live training" "results")
 started="$(date -u +%FT%TZ)"
 mark() {
