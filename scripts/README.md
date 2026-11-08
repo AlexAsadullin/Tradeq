@@ -23,5 +23,8 @@ a local OpenAI-compatible LLM for S7 and S8 (`stack.sh start llm`, port 8620). S
 `funds-run.sh`: the fund-trading RL pipeline (T-Capital funds, 0% commission): data refresh (fund bars, calendar,
 macro, live tape) -> services incl. the recorder and the I2 follower -> `rl funds-build` -> `rl funds-train`
 (offline PPO, then validation and the locked test against baselines) -> `rl funds-live` (hourly fine-tuning on new
-bars and live order books) -> results committed. Holds the sleep inhibitor. Start with
-`scripts/stack.sh start funds -- --offline-hours 6 --live-until "YYYY-MM-DD 19:00"`.
+bars and live order books) -> results committed. Holds the sleep inhibitor and ignores a short power-key press
+(a long press still forces power-off). Start with
+`scripts/stack.sh start funds -- --offline-hours 6 --live-until "YYYY-MM-DD 19:00"`. After an interruption, continue
+from saved weights with `--resume-from /abs/path/runs/<run>/policy.pt --dataset-id <dataset>` (skips the refresh and
+the dataset build) and set `--offline-hours` to the remaining budget.
