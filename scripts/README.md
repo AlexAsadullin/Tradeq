@@ -25,6 +25,8 @@ macro, live tape) -> services incl. the recorder and the I2 follower -> `rl fund
 (offline PPO, then validation and the locked test against baselines) -> `rl funds-live` (hourly fine-tuning on new
 bars and live order books) -> results committed. Holds the sleep inhibitor and ignores a short power-key press
 (a long press still forces power-off). Start with
-`scripts/stack.sh start funds -- --offline-hours 6 --live-until "YYYY-MM-DD 19:00"`. After an interruption, continue
+`scripts/stack.sh start funds -- --offline-until "YYYY-MM-DD 06:15" --rounds 3 --live-until "YYYY-MM-DD 19:00"`
+(rounds share the offline time with seeds 7, 11, 13, ...; each is scored on validation, the best goes once to the
+locked test and to the live phase; `--offline-hours N` instead of a stop time also works). After an interruption, continue
 from saved weights with `--resume-from /abs/path/runs/<run>/policy.pt --dataset-id <dataset>` (skips the refresh and
 the dataset build) and set `--offline-hours` to the remaining budget.
