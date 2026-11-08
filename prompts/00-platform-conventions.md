@@ -164,6 +164,11 @@ are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `
   as float64 (for example `pr_vwap`, `disb`, `put_vol_b`, `spread_bbo`, `imbalance_vol`).
 - `book_snapshot` from T-Bank: every stream message is a full snapshot of `depth` levels with `seq` null and
   `snapshot_id` `<board>-<exchange time ns>`.
+- Calendar file (2026-11-08): `tape calendar` writes
+  `$TRADEQ_DATA_DIR/market-tape-recorder/reference/calendar_i2.jsonl` in the `macro.ru_vintages` row format
+  (`series_id`, `date`, `value`, `announced_at`, int ns): `cal.div.<TICKER>.<last_buy_date>` (yield %),
+  `cal.divamt.<TICKER>.<last_buy_date>` (RUB per share), `cal.report.<TICKER>.<report_date>`; I2 ingests it with
+  `pit fetch-macro --calendar`.
 - Download progress (2026-11-08): `tape download` rewrites
   `$TRADEQ_DATA_DIR/market-tape-recorder/download/progress-<1d|1m>.json` (`state` running/done/stopped,
   `done_chunks`, `total_chunks`, `fraction`, `rows`, `requests`, `eta_s`, `updated_at_ns`); the final quality
@@ -282,7 +287,8 @@ are in `$ROOT/docs/moex-sources.md`. Crypto venues and the channels `funding`, `
   `s4`), live evaluations in I9's mirror sandbox, and promote/demote decisions gated by S6. The observation is the
   6.7 market slice. S4 (`robust-mm-rl`) serves it on port 8612 under `/v1/rl/*`; revision 2 (2026-11-08) adds
   `GET status` (pipeline stages with progress and ETA, current run, results, expectations) and optional run
-  progress fields. The stub serves only the mock world.
+  progress fields; revision 3 (2026-11-08) adds `GET history` (every run: dataset, inputs, weights status, test
+  results). The stub serves only the mock world.
 - Trading is local only. Paper orders go to I9's mirror sandbox (I6 when it runs). T-Bank is used for market data
   only, through I1 with SPKI key pinning, and the T-Bank sandbox broker is disabled.
 - Commission (T-Invest basic tariff, user decision 2026-11-05): 0.25% of trade value per fill, maker and taker

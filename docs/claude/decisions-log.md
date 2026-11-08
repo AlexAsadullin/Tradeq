@@ -30,3 +30,8 @@
 | 2026-11-08 | GPU route for Tradeq = llama.cpp on Vulkan for LLM inference (S7, S8), no ROCm, no Docker | Same ggml Vulkan path that works on this card in another project |
 | 2026-11-08 | RL stays on the CPU; the ROCm 5.4 gfx803 container (torch 1.13) is kept for large-network work | Measured: GPU 0.68x on the PPO loop, 7.2x on a large update |
 | 2026-11-08 | GPU compute removed (container image, OpenCL packages); guide saved to ~/Downloads/tradeq-rx580-gpu-guide.md | User: not needed for now |
+| 2026-11-08 | RL trades only T-Capital funds (0% commission on T-Invest) | User: commission-free, the fund fee is acceptable |
+| 2026-11-08 | Inputs chosen from literature first (robust-mm-rl docs/research-funds-features.md), then coded | User asked for research before code |
+| 2026-11-08 | Order book: live recording only, agent sees book features with an availability flag; hourly live fine-tuning | No free book history |
+| 2026-11-08 | Portfolio action with a trade intensity and a 2% band | Without it the policy churned (12.7 turnover/day); with it 0.08/day |
+| 2026-11-08 | The assistant does not register accounts or obtain tokens for the user | Account creation and credential handling stay with the user |

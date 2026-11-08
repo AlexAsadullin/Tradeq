@@ -33,6 +33,15 @@ As of 2026-11-08.
 - Not started: S2, S5, S9–S12, I3, I4, I7, I10. Root `CLAUDE.md` points here.
 - The hackathon application answer texts are not stored in the repo.
 
+## Fund agent (2026-11-08)
+
+- Running: `scripts/stack.sh start funds -- --offline-hours 6 --live-until "2026-11-09 19:00"` (started 13:39 MSK);
+  results land in `robust-mm-rl/results/` and the dashboard history; push robust-mm-rl after it finishes.
+- Tokens that would add data (user registers, puts them in `.env`): MOEX AlgoPack (`obstats` book history, Super
+  Candles) and the full MOEX order log; neither is free.
+- Next: several seeds, a deflated-Sharpe check of the test result (S6), oil prices (FORTS) as an input, fund
+  holdings beyond IMOEX (bond funds).
+
 ## In progress (2026-11-08)
 
 1. 1-minute history download (about 3 hours); then `make -C robust-mm-rl dataset`, `smoke-train`, and commit

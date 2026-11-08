@@ -57,7 +57,7 @@ the user must switch them to public manually, the tool is not allowed to create 
 | S3 | reactive-lob-sim | 8609 | reactive_lob_sim | Reactive MOEX order-book simulator (lots, ticks, bands, auctions, halts), impact κ, sim-to-real gap G | 55 |
 | I6 | shadow-exchange | 8610 | shadow_exchange | Shadow fills on real MOEX books, queue position, impact, latency; offline T-Bank sandbox rules as baseline | 145 |
 | I8 | research-terminal | 8611 | research_terminal | TradingView-style web UI (React, lightweight-charts) + FastAPI BFF; mock world; RL placeholder `rl/v1` | 31 + 11 UI |
-| S4 | robust-mm-rl | 8612 | robust_mm_rl | RL execution: versioned datasets from I2, bar-level execution env, TWAP baseline, PPO trainer, rl/v1 service with pipeline status, results registry in `results/` | 28 |
+| S4 | robust-mm-rl | 8612 | robust_mm_rl | RL agents: execution (bar-level, vs TWAP) and fund trading (14 T-Capital funds, 0% commission, research-based inputs, live books); rl/v1 service with pipeline status and training history; results in `results/` | 42 |
 
 Env prefixes: LEDGER_, TAPE_, PIT_, TSFM_, LEAKAGE_, BT_, ARENA_, GATEWAY_, SIM_, SHADOW_, TERMINAL_, RL_.
 

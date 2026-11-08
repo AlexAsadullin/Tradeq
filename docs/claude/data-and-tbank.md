@@ -76,3 +76,16 @@ with a streaming variant for the terminal; the live edge is cached (p95 20 ms).
   (`start`, `stop`, `status`, `logs`). Every foreground `make serve` or download blocks its terminal and dies
   with it; that is why the user's first attempt showed no dashboard during the download (2026-11-08). The jobs
   don't survive a reboot.
+
+## Fund phase data (2026-11-08)
+
+- **T-Capital funds moved from TQTF to TQBR in mid-2026**; the TQBR listings carry the full history. I1 selects funds
+  on both boards; 734,725 one-minute fund bars downloaded. Five fund listings have no trades (foreign-asset funds).
+- **No free order-book history exists** for MOEX (T-Invest: current book and stream only; free ISS: none; AlgoPack
+  obstats: paid). Fund books are recorded live since 2026-11-08 13:14 MSK (15 funds + 22 shares) and reach I2 through
+  the `follow` job.
+- New public series in I2 `macro.ru_vintages` (no token): RUONIA, CBR FX and metals, IMOEX/RGBI/RVI, fund iNAV
+  (`<FUND>A`), OFZ zero-coupon curve, IMOEX weights, CBR meeting calendar. Calendar from T-Invest (read-only
+  `GetDividends`, `GetAssetReports`) for the funds and IMOEX constituents. The refinancing rate equals the key rate
+  since 2016, so it is not a separate series.
+- TPAY pays monthly distributions (12 in the last year, 14.09% in total); fund returns include them.
