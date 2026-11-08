@@ -26,3 +26,5 @@
 | 2026-11-08 | RL dashboard lives in the research terminal's RL page, fed by S4 `rl serve` (rl/v1 revision 2, `status`) | User wants one web app with metrics, state, results and progress |
 | 2026-11-08 | RL results are kept in git (`robust-mm-rl/results/`, append-only) plus full artifacts in the data root | User: "do not lose them" |
 | 2026-11-08 | I1 writes download progress files (contract 6.2) | The dashboard needs progress and ETA |
+| 2026-11-08 | No GPU for the night RL run: profiling shows 57% env stepping, 22% small-batch forward, 21% update (GPU at most 1.27x); GPU +~70 W | Measured |
+| 2026-11-08 | GPU route for Tradeq = llama.cpp on Vulkan for LLM inference (S7, S8), no ROCm, no Docker | Same ggml Vulkan path that works on this card in another project |

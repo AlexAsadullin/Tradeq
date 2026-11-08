@@ -39,3 +39,5 @@ As of 2026-11-08.
    `robust-mm-rl/results/`.
 2. I1: resolve T-Capital funds with `EtfBy` in the recorder so TMOS and TGLD books are recorded.
 3. Run the background services under systemd user units so they survive a reboot.
+4. GPU (RX 580) for LLM inference: `scripts/gpu-llm.sh build` and `model` must be run by the user (the
+   assistant may not download and compile external code); then `verify` and `stack.sh start llm` (port 8620).

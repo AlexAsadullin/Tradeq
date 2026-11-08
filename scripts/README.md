@@ -15,3 +15,7 @@ its checkpoint); `logs <job>` follows a log. Dashboard: http://127.0.0.1:8611/#r
 (systemd-inhibit and gnome-session-inhibit) for the whole run. Start it in the background with
 `scripts/stack.sh start night -- --until 09:00`; stop with `scripts/stack.sh stop night` (training then ends
 gracefully, evaluates, records and commits).
+
+`gpu-llm.sh`: GPU on the RX 580 without ROCm or Docker. It builds llama.cpp (pinned `b11869`) with Vulkan and serves
+a local OpenAI-compatible LLM for S7 and S8 (`stack.sh start llm`, port 8620). Steps: `check`, `build`, `model`,
+`verify`. Inference only; RL training stays on the CPU.

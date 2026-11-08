@@ -15,6 +15,7 @@
 #   terminal  web app with the RL dashboard, port 8611  ->  http://127.0.0.1:8611/#rl
 #   download  scripts/download-all.sh (resumable; extra args after --, e.g. start download -- --only minute)
 #   record    T-Bank order-book recording of the liquid names (until stopped)
+#   llm       local LLM on the GPU (llama.cpp on Vulkan, port 8620; set up with scripts/gpu-llm.sh)
 #   night     scripts/night-run.sh: download -> dataset -> training until a deadline -> results (no sleep)
 set -euo pipefail
 
@@ -25,7 +26,7 @@ mkdir -p "$LOGS" "$RUN"
 export PATH="$HOME/.local/bin:$PATH"
 
 SERVICES=(i2 s4 terminal)
-ALL=(i2 s4 terminal download record night)
+ALL=(i2 s4 terminal download record night llm)
 
 cmd_of() {
   case "$1" in
@@ -33,13 +34,14 @@ cmd_of() {
     s4) echo "cd '$ROOT/robust-mm-rl' && exec .venv/bin/rl serve" ;;
     terminal) echo "cd '$ROOT/research-terminal' && exec .venv/bin/terminal serve" ;;
     download) echo "cd '$ROOT' && exec scripts/download-all.sh ${EXTRA[*]:-}" ;;
+    llm) echo "cd '$ROOT' && exec data/cache/llama.cpp/build/bin/llama-server -m '${LLM_MODEL:-$ROOT/data/cache/models/qwen2.5-0.5b-instruct-q4_k_m.gguf}' -ngl 99 --host 127.0.0.1 --port 8620" ;;
     night) echo "cd '$ROOT' && exec scripts/night-run.sh ${EXTRA[*]:-}" ;;
     record) echo "cd '$ROOT/market-tape-recorder' && exec .venv/bin/tape record --venue moex-tbank --config '$ROOT/data/market-tape-recorder/config/record-liquid.yaml'" ;;
     *) echo "unknown job: $1 (one of: ${ALL[*]})" >&2; exit 64 ;;
   esac
 }
 
-port_of() { case "$1" in i2) echo 8603 ;; s4) echo 8612 ;; terminal) echo 8611 ;; *) echo "" ;; esac; }
+port_of() { case "$1" in i2) echo 8603 ;; s4) echo 8612 ;; terminal) echo 8611 ;; llm) echo 8620 ;; *) echo "" ;; esac; }
 
 pid_of() {
   local f="$RUN/$1.pid"
