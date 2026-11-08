@@ -29,3 +29,4 @@
 | 2026-11-08 | No GPU for the night RL run: profiling shows 57% env stepping, 22% small-batch forward, 21% update (GPU at most 1.27x); GPU +~70 W | Measured |
 | 2026-11-08 | GPU route for Tradeq = llama.cpp on Vulkan for LLM inference (S7, S8), no ROCm, no Docker | Same ggml Vulkan path that works on this card in another project |
 | 2026-11-08 | RL stays on the CPU; the ROCm 5.4 gfx803 container (torch 1.13) is kept for large-network work | Measured: GPU 0.68x on the PPO loop, 7.2x on a large update |
+| 2026-11-08 | GPU compute removed (container image, OpenCL packages); guide saved to ~/Downloads/tradeq-rx580-gpu-guide.md | User: not needed for now |
