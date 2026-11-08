@@ -35,3 +35,5 @@
 | 2026-11-08 | Order book: live recording only, agent sees book features with an availability flag; hourly live fine-tuning | No free book history |
 | 2026-11-08 | Portfolio action with a trade intensity and a 2% band | Without it the policy churned (12.7 turnover/day); with it 0.08/day |
 | 2026-11-08 | The assistant does not register accounts or obtain tokens for the user | Account creation and credential handling stay with the user |
+| 2026-11-08 | Datasets screen in the terminal built only from service data (I2 registry + stored stats, S4 dataset files); joins inferred from single-column keys of non-empty datasets | User asked for a schema with connections imported from real data, no hardcoding |
+| 2026-11-08 | Funds offline training in seed rounds up to a stop time (06:15); best by validation tested once, then live | User asked for a custom stop time and reruns |
