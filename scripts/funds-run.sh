@@ -6,9 +6,12 @@
 # changes. Each step is resumable; the dashboard (http://127.0.0.1:8611/#rl) shows every step.
 #
 # Usage: scripts/funds-run.sh [--offline-hours N] [--live-until "YYYY-MM-DD HH:MM"] [--skip-refresh]
+#                             [--resume-from RUN_DIR/policy.pt --dataset-id ID]
 #   --offline-hours  PPO time budget on history (default 6)
 #   --live-until     end of the live phase, MSK (default: next weekday 19:00, after the main session)
 #   --skip-refresh   use the data already in I2
+#   --resume-from    continue the offline training from these weights (skips refresh and dataset build)
+#   --dataset-id     dataset to train on (default: newest fund dataset)
 # Run it in the background: scripts/stack.sh start funds -- --offline-hours 6
 set -euo pipefail
 
@@ -22,20 +25,22 @@ if [[ -z "${TRADEQ_INHIBITED:-}" ]]; then
     inner=(gnome-session-inhibit --inhibit suspend:idle --reason "Tradeq funds RL run" "${inner[@]}")
   fi
   if command -v systemd-inhibit >/dev/null; then
-    exec systemd-inhibit --what=sleep:idle --who="Tradeq funds RL run" \
+    exec systemd-inhibit --what=sleep:idle:handle-power-key --who="Tradeq funds RL run" \
       --why="Training the fund-trading RL agent" --mode=block "${inner[@]}"
   fi
   echo "warning: systemd-inhibit not found; the PC may sleep" >&2
   exec "${inner[@]}"
 fi
 
-offline_hours=6; live_until=""; skip_refresh=0
+offline_hours=6; live_until=""; skip_refresh=0; resume_from=""; dataset_id=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --offline-hours) offline_hours="${2:?}"; shift ;;
     --live-until) live_until="${2:?}"; shift ;;
     --skip-refresh) skip_refresh=1 ;;
-    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
+    --resume-from) resume_from="${2:?}"; skip_refresh=1; shift ;;
+    --dataset-id) dataset_id="${2:?}"; shift ;;
+    -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
     *) echo "unknown option: $1" >&2; exit 64 ;;
   esac
   shift
@@ -100,11 +105,18 @@ step 1 "I2, S4, terminal, recorder, I2 follower"
 "$ROOT/scripts/stack.sh" start i2 s4 terminal record follow
 for _ in $(seq 1 60); do curl -sf -m 2 http://127.0.0.1:8603/healthz >/dev/null && break; sleep 2; done
 
-step 2 "rl funds-build"
-(cd "$ROOT/robust-mm-rl" && .venv/bin/rl funds-build | tail -n 12)
+train_args=(--hours "$offline_hours")
+[[ -n "$dataset_id" ]] && train_args+=(--dataset-id "$dataset_id")
+if [[ -n "$resume_from" ]]; then
+  step 2 "resume: dataset kept (${dataset_id:-newest})"
+  train_args+=(--init-from "$resume_from" --tag funds-ppo-resume)
+else
+  step 2 "rl funds-build"
+  (cd "$ROOT/robust-mm-rl" && .venv/bin/rl funds-build | tail -n 12)
+fi
 
 step 3 "PPO ${offline_hours} h on history, then validation and the locked test"
-out="$(cd "$ROOT/robust-mm-rl" && .venv/bin/rl funds-train --hours "$offline_hours")"
+out="$(cd "$ROOT/robust-mm-rl" && .venv/bin/rl funds-train "${train_args[@]}")"
 echo "$out" | tail -n 40
 weights="$(echo "$out" | python3 -c "import json,sys; print(json.load(sys.stdin)['run_dir'])")/policy.pt"
 
